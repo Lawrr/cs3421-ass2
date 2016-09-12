@@ -154,83 +154,101 @@ public class Terrain {
     }
 
     public void draw(GL2 gl) {
-        // Material property vectors.
-        float matAmbAndDifFront[] = {0.9f, 0.0f, 0.0f, 1.0f};
-        float matAmbAndDifBack[] = {0.9f, 0, 0.9f, 1.0f};
-        float matSpec[] = {0.0f, 0.0f, 0.0f, 1.0f};
+//        // Material property vectors.
+//        float matAmbAndDifFront[] = {0.9f, 0.0f, 0.0f, 1.0f};
+//        float matAmbAndDifBack[] = {0.9f, 0, 0.9f, 1.0f};
+//        float matSpec[] = {0.0f, 0.0f, 0.0f, 1.0f};
+//
+//        // Material properties of the box.
+//        gl.glMaterialfv(GL2.GL_FRONT, GL2.GL_AMBIENT_AND_DIFFUSE, matAmbAndDifFront, 0);
+//        gl.glMaterialfv(GL2.GL_BACK, GL2.GL_AMBIENT_AND_DIFFUSE, matAmbAndDifBack, 0);
+//        gl.glMaterialfv(GL2.GL_FRONT_AND_BACK, GL2.GL_SPECULAR, matSpec, 0);
+//        double vertices[] =
+//                {
+//                        1.0, -1.0, 1.0,
+//                        1.0, 1.0, 1.0,
+//                        1.0, 1.0, -1.0,
+//                        1.0, -1.0, -1.0,
+//                        -1.0, -1.0, 1.0,
+//                        -1.0, 1.0, 1.0,
+//                        -1.0, 1.0, -1.0,
+//                        -1.0, -1.0, -1.0
+//                };
+//
+//        double faceNormals[] = {
+//                1, 0, 0,  //right face
+//                0, 0,-1,  //back face
+//                -1, 0, 0,  //left face
+//                0, 0, 1,  //front face
+//                0,-1, 0,  //bottom face
+//                0, 1, 0   //top face
+//        };
+//        int quadIndices[] =
+//                {
+//                        3, 2, 1, 0, //right face
+//                        7, 6, 2, 3, //back face
+//                        4, 5, 6, 7, //left face
+//                        0, 1, 5, 4, //front face
+//                        4, 7, 3, 0, //bottom face
+//                        6, 5, 1, 2  //top face
+//                };
+//
+//        //Draw 5 faces of box excluding the top. (each with 4 vertices)
+//        gl.glPolygonMode(GL2.GL_FRONT_AND_BACK, GL2.GL_LINE);
+//        gl.glBegin(GL2.GL_QUADS);
+//        {
+//
+//            for (int i = 0; i < 20; i++) {
+//                int index = quadIndices[i];
+//
+//                gl.glNormal3dv(faceNormals, (i / 4) * 3);
+//
+//                gl.glVertex3dv(vertices, index * 3);
+//
+//            }
+//        }
+//        gl.glEnd();
+//
+//        int step = 0;
+//
+//        // The rotated lid (top side) of the box.
+//        gl.glPushMatrix();
+//        gl.glTranslated(0.0, 1.0, -1.0);
+//        gl.glRotated(step, -1.0, 0.0, 0.0);
+//        gl.glTranslated(0.0, -1.0, 1.0);
+//
+//        gl.glBegin(GL2.GL_QUADS);
+//        {
+//            for (int i = 20; i < 24; i++) {
+//                int index = quadIndices[i];
+//
+//                gl.glNormal3dv(faceNormals, (i / 4) * 3);
+//
+//                gl.glVertex3dv(vertices, index * 3);
+//
+//            }
+//        }
+//        gl.glEnd();
+//        gl.glPopMatrix();
 
-        // Material properties of the box.
-        gl.glMaterialfv(GL2.GL_FRONT, GL2.GL_AMBIENT_AND_DIFFUSE, matAmbAndDifFront, 0);
-        gl.glMaterialfv(GL2.GL_BACK, GL2.GL_AMBIENT_AND_DIFFUSE, matAmbAndDifBack, 0);
-        gl.glMaterialfv(GL2.GL_FRONT_AND_BACK, GL2.GL_SPECULAR, matSpec, 0);
-        double vertices[] =
-                {
-                        1.0, -1.0, 1.0,
-                        1.0, 1.0, 1.0,
-                        1.0, 1.0, -1.0,
-                        1.0, -1.0, -1.0,
-                        -1.0, -1.0, 1.0,
-                        -1.0, 1.0, 1.0,
-                        -1.0, 1.0, -1.0,
-                        -1.0, -1.0, -1.0
-                };
-
-        double faceNormals[] = {
-                1, 0, 0,  //right face
-                0, 0,-1,  //back face
-                -1, 0, 0,  //left face
-                0, 0, 1,  //front face
-                0,-1, 0,  //bottom face
-                0, 1, 0   //top face
-        };
-        int quadIndices[] =
-                {
-                        3, 2, 1, 0, //right face
-                        7, 6, 2, 3, //back face
-                        4, 5, 6, 7, //left face
-                        0, 1, 5, 4, //front face
-                        4, 7, 3, 0, //bottom face
-                        6, 5, 1, 2  //top face
-                };
-
-        //Draw 5 faces of box excluding the top. (each with 4 vertices)
         gl.glPolygonMode(GL2.GL_FRONT_AND_BACK, GL2.GL_LINE);
-        gl.glBegin(GL2.GL_QUADS);
-        {
+        for (int row = 0; row < myAltitude.length - 1; row++) {
+            for (int col = 0; col < myAltitude[row].length - 1; col++) {
+                gl.glBegin(GL2.GL_TRIANGLES);
+                {
+                    gl.glVertex3d(col + 1, myAltitude[row + 1][col + 1], row + 1);
+                    gl.glVertex3d(col + 1, myAltitude[row][col + 1], row);
+                    gl.glVertex3d(col, myAltitude[row][col], row);
 
-            for (int i = 0; i < 20; i++) {
-                int index = quadIndices[i];
-
-                gl.glNormal3dv(faceNormals, (i / 4) * 3);
-
-                gl.glVertex3dv(vertices, index * 3);
+                    gl.glVertex3d(col, myAltitude[row][col], row);
+                    gl.glVertex3d(col, myAltitude[row + 1][col], row + 1);
+                    gl.glVertex3d(col + 1, myAltitude[row + 1][col + 1], row + 1);
+                }
+                gl.glEnd();
 
             }
         }
-        gl.glEnd();
         gl.glPolygonMode(GL2.GL_FRONT_AND_BACK, GL2.GL_FILL);
-
-        int step = 0;
-
-        // The rotated lid (top side) of the box.
-        gl.glPushMatrix();
-        gl.glTranslated(0.0, 1.0, -1.0);
-        gl.glRotated(step, -1.0, 0.0, 0.0);
-        gl.glTranslated(0.0, -1.0, 1.0);
-
-        gl.glBegin(GL2.GL_QUADS);
-        {
-            for (int i = 20; i < 24; i++) {
-                int index = quadIndices[i];
-
-                gl.glNormal3dv(faceNormals, (i / 4) * 3);
-
-                gl.glVertex3dv(vertices, index * 3);
-
-            }
-        }
-        gl.glEnd();
-        gl.glPopMatrix();
     }
 
     public void printAltitude() {
