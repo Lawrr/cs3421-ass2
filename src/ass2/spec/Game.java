@@ -90,7 +90,7 @@ public class Game extends JFrame implements GLEventListener, KeyListener {
 		// Camera
 		GLUT glut = new GLUT();
 		GLU glu = new GLU();
-		glu.gluLookAt(0.0, 8.0, 6.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
+		glu.gluLookAt(0.0, 0.5, 9.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
 
 //		setLighting(gl);
 

@@ -236,20 +236,13 @@ public class Terrain {
             for (int x = 0; x < myAltitude[z].length - 1; x++) {
                 gl.glBegin(GL2.GL_TRIANGLES);
                 {
-                    printAltitude();
                     gl.glVertex3d(x + 1, myAltitude[x + 1][z + 1], z + 1);
-                    System.out.printf("1. %d, %.2f, %d\n", x + 1, myAltitude[x + 1][z + 1], z + 1);
                     gl.glVertex3d(x + 1, myAltitude[x + 1][z], z);
-                    System.out.printf("2. %d, %.2f, %d\n", x + 1, myAltitude[x + 1][z], z);
                     gl.glVertex3d(x, myAltitude[x][z + 1], z + 1);
-                    System.out.printf("3. %d, %.2f, %d\n", x, myAltitude[x][z + 1], z + 1);
 
                     gl.glVertex3d(x, myAltitude[x][z + 1], z + 1);
-                    System.out.printf("4. %d, %.2f, %d\n", x, myAltitude[x][z + 1], z + 1);
                     gl.glVertex3d(x + 1, myAltitude[x + 1][z], z);
-                    System.out.printf("5. %d, %.2f, %d\n",x + 1, myAltitude[x + 1][z], z);
                     gl.glVertex3d(x, myAltitude[x][z], z);
-                    System.out.printf("6. %d, %.2f, %d\n",x, myAltitude[x][z], z);
                 }
                 gl.glEnd();
 
