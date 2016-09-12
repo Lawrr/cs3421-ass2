@@ -87,13 +87,14 @@ public class Game extends JFrame implements GLEventListener, KeyListener {
 		gl.glMatrixMode(GL2.GL_MODELVIEW);
 		gl.glLoadIdentity();
 
+		// Camera
 		GLUT glut = new GLUT();
 		GLU glu = new GLU();
-		glu.gluLookAt(2.0, 10.0, 6.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
+		glu.gluLookAt(0.0, 8.0, 6.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
 
-		setLighting(gl);
+//		setLighting(gl);
 
-		avatar.draw(gl);
+//		avatar.draw(gl);
 		myTerrain.draw(gl);
 	}
 
