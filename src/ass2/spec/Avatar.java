@@ -25,7 +25,7 @@ public class Avatar {
         // Draw Scene
         GLUT glut = new GLUT();
         gl.glFrontFace(GL2.GL_CW);
-        glut.glutSolidTeapot(1.5);
+//        glut.glutSolidTeapot(1.5);
         gl.glFrontFace(GL2.GL_CCW);
     }
 }
