@@ -179,15 +179,27 @@ public class Terrain {
     }
 
     private void drawSelf(GL2 gl) {
-        gl.glPolygonMode(GL2.GL_FRONT_AND_BACK, GL2.GL_LINE);
+        gl.glPolygonMode(GL2.GL_FRONT_AND_BACK, GL2.GL_FILL);
+
+        float matAmbAndDif[] = {0.0f, 1.0f, 0.0f, 1.0f};
+        float matSpec[] = {1.0f, 1.0f, 1.0f, 1.0f};
+        float matShine[] = {50.0f};
+        float emm[] = {0.0f, 0.0f, 0.0f, 1.0f};
+        gl.glMaterialfv(GL2.GL_FRONT, GL2.GL_AMBIENT_AND_DIFFUSE, matAmbAndDif, 0);
+        gl.glMaterialfv(GL2.GL_FRONT, GL2.GL_SPECULAR, matSpec, 0);
+        gl.glMaterialfv(GL2.GL_FRONT, GL2.GL_SHININESS, matShine, 0);
+        gl.glMaterialfv(GL2.GL_FRONT, GL2.GL_EMISSION, emm, 0);
+
         for (int z = 0; z < myAltitude.length - 1; z++) {
             for (int x = 0; x < myAltitude[z].length - 1; x++) {
                 gl.glBegin(GL2.GL_TRIANGLES);
                 {
+                    gl.glNormal3d(x, myAltitude[x + 1][z + 1] + 1, z);
                     gl.glVertex3d(x + 1, myAltitude[x + 1][z + 1], z + 1);
                     gl.glVertex3d(x + 1, myAltitude[x + 1][z], z);
                     gl.glVertex3d(x, myAltitude[x][z + 1], z + 1);
 
+                    gl.glNormal3d(x, myAltitude[x][z + 1] + 1, z);
                     gl.glVertex3d(x, myAltitude[x][z + 1], z + 1);
                     gl.glVertex3d(x + 1, myAltitude[x + 1][z], z);
                     gl.glVertex3d(x, myAltitude[x][z], z);

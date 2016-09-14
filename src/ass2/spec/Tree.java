@@ -33,8 +33,17 @@ public class Tree {
         System.out.println(terrain.altitude(2.5, 2.5));
     	double z1 = 0;
     	double z2 = height;
-    	gl.glPolygonMode(GL2.GL_FRONT_AND_BACK, GL2.GL_LINE);
+    	gl.glPolygonMode(GL2.GL_FRONT_AND_BACK, GL2.GL_FILL);
     	//Front circle
+
+        float matAmbAndDif[] = {0.4f, 0.3f, 0.2f, 1.0f};
+        float matSpec[] = {1.0f, 1.0f, 1.0f, 1.0f};
+        float matShine[] = {50.0f};
+        float emm[] = {0.0f, 0.0f, 0.0f, 1.0f};
+        gl.glMaterialfv(GL2.GL_FRONT, GL2.GL_AMBIENT_AND_DIFFUSE, matAmbAndDif, 0);
+        gl.glMaterialfv(GL2.GL_FRONT, GL2.GL_SPECULAR, matSpec, 0);
+        gl.glMaterialfv(GL2.GL_FRONT, GL2.GL_SHININESS, matShine, 0);
+        gl.glMaterialfv(GL2.GL_FRONT, GL2.GL_EMISSION, emm, 0);
 
     	gl.glBegin(GL2.GL_TRIANGLE_FAN);{
 
@@ -126,10 +135,19 @@ public class Tree {
 
         double leavesRadius = width * 4;
         gl.glTranslated(0, z2 + leavesRadius -  leavesRadius * 0.25, 0);
+
+        matAmbAndDif = new float[]{0.0f, 0.5f, 0.1f, 1.0f};
+        matSpec = new float[]{1.0f, 1.0f, 1.0f, 1.0f};
+        matShine = new float[]{50.0f};
+        emm = new float[]{0.0f, 0.0f, 0.0f, 1.0f};
+        gl.glMaterialfv(GL2.GL_FRONT, GL2.GL_AMBIENT_AND_DIFFUSE, matAmbAndDif, 0);
+        gl.glMaterialfv(GL2.GL_FRONT, GL2.GL_SPECULAR, matSpec, 0);
+        gl.glMaterialfv(GL2.GL_FRONT, GL2.GL_SHININESS, matShine, 0);
+        gl.glMaterialfv(GL2.GL_FRONT, GL2.GL_EMISSION, emm, 0);
+
         GLUT glut = new GLUT();
         glut.glutSolidSphere(leavesRadius, 40, 40);
 
-    	gl.glPolygonMode(GL2.GL_FRONT_AND_BACK, GL2.GL_FILL);
         gl.glPopMatrix();
     }
 }

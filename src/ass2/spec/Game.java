@@ -82,7 +82,7 @@ public class Game extends JFrame implements GLEventListener, KeyListener {
 	@Override
 	public void display(GLAutoDrawable drawable) {
 		GL2 gl = drawable.getGL().getGL2();
-		gl.glClearColor(1, 1, 1, 1);
+		gl.glClearColor(0.7f, 0.9f, 1, 1);
 		gl.glClear(GL2.GL_COLOR_BUFFER_BIT | GL2.GL_DEPTH_BUFFER_BIT);
 		gl.glMatrixMode(GL2.GL_MODELVIEW);
 		gl.glLoadIdentity();
@@ -95,7 +95,7 @@ public class Game extends JFrame implements GLEventListener, KeyListener {
 		pos[1] = myTerrain.altitude(pos[0], pos[2]);
 		glu.gluLookAt(pos[0] + 1, pos[1] + 1, pos[2] + 1, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
 
-//		setLighting(gl);
+		setLighting(gl);
 
 		avatar.draw(gl);
 		myTerrain.draw(gl);
