@@ -125,6 +125,10 @@ public class Terrain {
         int z1 = (int) z;
         int z2 = (int) Math.ceil(z);
 
+        if (!(x1 >= 0 && x2 < mySize.getWidth() &&
+            z1 >= 0 && z2 < mySize.getHeight())) {
+            return 0;
+        }
         // Check which side of the triangle the point is on
 
         double fx1 = myAltitude[x1][z2];

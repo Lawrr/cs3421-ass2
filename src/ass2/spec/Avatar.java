@@ -6,14 +6,20 @@ import com.jogamp.opengl.util.gl2.GLUT;
 public class Avatar {
 
     private double[] translation;
+    private double rotation;
 
     public Avatar() {
         translation = new double[3];
+        translation[0] = 0;
         translation[1] = 0.5;
         translation[2] = 9;
     }
 
     public void draw(GL2 gl) {
+        gl.glPushMatrix();
+        gl.glTranslated(translation[0], translation[1], translation[2]);
+        gl.glRotated(rotation, 0, 1, 0);
+
         //Draw Teapot
         float matAmbAndDif[] = {1.0f, 0.0f, 0.0f, 1.0f};
         float matSpec[] = {1.0f, 1.0f, 1.0f, 1.0f};
@@ -29,8 +35,10 @@ public class Avatar {
         // Draw Scene
         GLUT glut = new GLUT();
         gl.glFrontFace(GL2.GL_CW);
-        glut.glutSolidTeapot(1.5);
+        glut.glutSolidTeapot(0.3);
         gl.glFrontFace(GL2.GL_CCW);
+
+        gl.glPopMatrix();
     }
 
     public double[] getPos() {
@@ -41,5 +49,11 @@ public class Avatar {
         translation[0] += x;
         translation[1] += y;
         translation[2] += z;
+    }
+
+    public void rotate(double theta) {
+        rotation += theta;
+        // TODO
+        rotation %= 360;
     }
 }
