@@ -1,6 +1,7 @@
 package ass2.spec;
 
 import com.jogamp.opengl.GL2;
+import com.jogamp.opengl.util.gl2.GLUT;
 
 /**
  * COMMENT: Comment Tree 
@@ -28,8 +29,8 @@ public class Tree {
         gl.glTranslated(myPos[0], myPos[1], myPos[2]);
         int slices = 32;
         double size = 0.3;
-    	double z1 = 2;
-    	double z2 = 0;
+    	double z1 = 0;
+    	double z2 = 2;
     	gl.glPolygonMode(GL2.GL_FRONT_AND_BACK, GL2.GL_LINE);
     	//Front circle
 
@@ -39,7 +40,7 @@ public class Tree {
     		 gl.glVertex3d(0,z1,0);
     		 double angleStep = 2*Math.PI/slices;
              for (int i = 0; i <= slices ; i++){
-                 double a0 = 2*Math.PI - i * angleStep;
+                 double a0 = i * angleStep;
                  double x0 = Math.cos(a0) * size;
                  double y0 = Math.sin(a0) * size;
 
@@ -57,7 +58,7 @@ public class Tree {
    		 gl.glVertex3d(0,z2,0);
    		 double angleStep = 2*Math.PI/slices;
             for (int i = 0; i <= slices ; i++){
-                double a0 = i * angleStep;
+                double a0 = 2*Math.PI - i * angleStep;
                 double x0 = Math.cos(a0) * size;
                 double y0 = Math.sin(a0) * size;
 
@@ -120,6 +121,11 @@ public class Tree {
 
         }
         gl.glEnd();
+
+        double leavesRadius = size * 4;
+        gl.glTranslated(0, z2 + leavesRadius -  leavesRadius * 0.25, 0);
+        GLUT glut = new GLUT();
+        glut.glutSolidSphere(leavesRadius, 40, 40);
 
     	gl.glPolygonMode(GL2.GL_FRONT_AND_BACK, GL2.GL_FILL);
         gl.glPopMatrix();
