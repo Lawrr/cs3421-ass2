@@ -203,7 +203,7 @@ public class Terrain {
             t.draw(gl, this);
         }
         for (Road r : myRoads) {
-            r.draw(gl);
+            r.draw(gl, this);
         }
         gl.glPopMatrix();
     }

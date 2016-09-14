@@ -149,7 +149,36 @@ public class Road {
     }
 
 
-    public void draw(GL2 gl) {
+    public void draw(GL2 gl, Terrain terrain) {
+        gl.glPolygonMode(GL2.GL_FRONT_AND_BACK, GL2.GL_LINE);
+        for (int i = 6; i < myPoints.size(); i += 6) {
+            gl.glBegin(GL2.GL_LINES);
+            {
+                double x0 = myPoints.get(i - 6);
+                double z0 = myPoints.get(i - 6 + 1);
+                double y0 = terrain.altitude(x0, z0);
+                double x1 = myPoints.get(i - 4);
+                double z1 = myPoints.get(i - 4 + 1);
+                double y1 = terrain.altitude(x1, z1);
+                double x2 = myPoints.get(i - 2);
+                double z2 = myPoints.get(i - 2 + 1);
+                double y2 = terrain.altitude(x2, z2);
+                double x3 = myPoints.get(i);
+                double z3 = myPoints.get(i + 1);
+                double y3 = terrain.altitude(x3, z3);
 
+                gl.glVertex3d(x0, y0, z0);
+                gl.glVertex3d(x1, y1, z1);
+                gl.glVertex3d(x1, y1, z1);
+                gl.glVertex3d(x2, y2, z2);
+                gl.glVertex3d(x2, y2, z2);
+                gl.glVertex3d(x3, y3, z3);
+                gl.glVertex3d(x0, y0, z0);
+                gl.glVertex3d(x3, y3, z3);
+            }
+            gl.glEnd();
+        }
+
+        gl.glPolygonMode(GL2.GL_FRONT_AND_BACK, GL2.GL_FILL);
     }
 }
