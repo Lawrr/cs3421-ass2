@@ -87,15 +87,35 @@ public class Game extends JFrame implements GLEventListener, KeyListener {
 		gl.glMatrixMode(GL2.GL_MODELVIEW);
 		gl.glLoadIdentity();
 
-		// Camera
 		GLUT glut = new GLUT();
 		GLU glu = new GLU();
-		glu.gluLookAt(0.0, 0.5, 9.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
+
+		// Camera
+		double[] pos = avatar.getPos();
+		glu.gluLookAt(pos[0], pos[1], pos[2], 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
 
 //		setLighting(gl);
 
 //		avatar.draw(gl);
 		myTerrain.draw(gl);
+
+		// Draw axises
+		gl.glPolygonMode(GL2.GL_FRONT_AND_BACK, GL2.GL_LINE);
+		gl.glBegin(GL2.GL_LINES);
+		gl.glColor4d(1, 0, 0, 1);
+		gl.glVertex3d(0, 0, 0);
+		gl.glVertex3d(100, 0, 0);
+		gl.glColor4d(0, 1, 0, 1);
+		gl.glVertex3d(0, 0, 0);
+		gl.glVertex3d(0, 100, 0);
+		gl.glColor4d(0, 0, 1, 1);
+		gl.glVertex3d(0, 0, 0);
+		gl.glVertex3d(0, 0, 100);
+		gl.glEnd();
+
+		//Set back to FILL when you are finished - not needed but is a bug fix for some implementations on some platforms
+		gl.glPolygonMode(GL2.GL_FRONT_AND_BACK, GL2.GL_FILL);
+
 	}
 
 	@Override
@@ -274,28 +294,23 @@ public class Game extends JFrame implements GLEventListener, KeyListener {
 					if (s > 0.0) s -= 0.05;
 				}
 				break;
+			case KeyEvent.VK_T:
+				avatar.translate(0, 1, 0);
+				break;
 			case KeyEvent.VK_G:
-				if (ev.isShiftDown()) {
-					if (g < 1.0) g += 0.05;
-				} else {
-					if (g > 0.0) g -= 0.05;
-				}
+				avatar.translate(0, -1, 0);
 				break;
 			case KeyEvent.VK_UP:
-				xAngle--;
-				if (xAngle < 0.0) xAngle += 360.0;
+				avatar.translate(0, 0, -1);
 				break;
 			case KeyEvent.VK_DOWN:
-				xAngle++;
-				if (xAngle > 360.0) xAngle -= 360.0;
+				avatar.translate(0, 0, 1);
 				break;
 			case KeyEvent.VK_LEFT:
-				yAngle--;
-				if (yAngle < 0.0) yAngle += 360.0;
+				avatar.translate(-1, 0, 0);
 				break;
 			case KeyEvent.VK_RIGHT:
-				yAngle++;
-				if (yAngle > 360.0) yAngle -= 360.0;
+				avatar.translate(1, 0, 0);
 				break;
 			default:
 				break;

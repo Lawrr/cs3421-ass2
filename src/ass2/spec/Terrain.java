@@ -113,18 +113,23 @@ public class Terrain {
     /**
      * Get the altitude at an arbitrary point. 
      * Non-integer points should be interpolated from neighbouring grid points
-     * 
-     * TO BE COMPLETED
-     * 
+     *
      * @param x
      * @param z
      * @return
      */
     public double altitude(double x, double z) {
+        int startX = (int) x;
+        int endX = startX + 1;
+        double offsetX = endX - x;
+
+        int startZ = (int) z;
+        int endZ = startZ + 1;
+        double offsetZ = endZ - z;
+        // TODO
+
         double altitude = 0;
 
-        
-        
         return altitude;
     }
 
@@ -153,84 +158,7 @@ public class Terrain {
         myRoads.add(road);        
     }
 
-    public void draw(GL2 gl) {
-//        // Material property vectors.
-//        float matAmbAndDifFront[] = {0.9f, 0.0f, 0.0f, 1.0f};
-//        float matAmbAndDifBack[] = {0.9f, 0, 0.9f, 1.0f};
-//        float matSpec[] = {0.0f, 0.0f, 0.0f, 1.0f};
-//
-//        // Material properties of the box.
-//        gl.glMaterialfv(GL2.GL_FRONT, GL2.GL_AMBIENT_AND_DIFFUSE, matAmbAndDifFront, 0);
-//        gl.glMaterialfv(GL2.GL_BACK, GL2.GL_AMBIENT_AND_DIFFUSE, matAmbAndDifBack, 0);
-//        gl.glMaterialfv(GL2.GL_FRONT_AND_BACK, GL2.GL_SPECULAR, matSpec, 0);
-//        double vertices[] =
-//                {
-//                        1.0, -1.0, 1.0,
-//                        1.0, 1.0, 1.0,
-//                        1.0, 1.0, -1.0,
-//                        1.0, -1.0, -1.0,
-//                        -1.0, -1.0, 1.0,
-//                        -1.0, 1.0, 1.0,
-//                        -1.0, 1.0, -1.0,
-//                        -1.0, -1.0, -1.0
-//                };
-//
-//        double faceNormals[] = {
-//                1, 0, 0,  //right face
-//                0, 0,-1,  //back face
-//                -1, 0, 0,  //left face
-//                0, 0, 1,  //front face
-//                0,-1, 0,  //bottom face
-//                0, 1, 0   //top face
-//        };
-//        int quadIndices[] =
-//                {
-//                        3, 2, 1, 0, //right face
-//                        7, 6, 2, 3, //back face
-//                        4, 5, 6, 7, //left face
-//                        0, 1, 5, 4, //front face
-//                        4, 7, 3, 0, //bottom face
-//                        6, 5, 1, 2  //top face
-//                };
-//
-//        //Draw 5 faces of box excluding the top. (each with 4 vertices)
-//        gl.glPolygonMode(GL2.GL_FRONT_AND_BACK, GL2.GL_LINE);
-//        gl.glBegin(GL2.GL_QUADS);
-//        {
-//
-//            for (int i = 0; i < 20; i++) {
-//                int index = quadIndices[i];
-//
-//                gl.glNormal3dv(faceNormals, (i / 4) * 3);
-//
-//                gl.glVertex3dv(vertices, index * 3);
-//
-//            }
-//        }
-//        gl.glEnd();
-//
-//        int step = 0;
-//
-//        // The rotated lid (top side) of the box.
-//        gl.glPushMatrix();
-//        gl.glTranslated(0.0, 1.0, -1.0);
-//        gl.glRotated(step, -1.0, 0.0, 0.0);
-//        gl.glTranslated(0.0, -1.0, 1.0);
-//
-//        gl.glBegin(GL2.GL_QUADS);
-//        {
-//            for (int i = 20; i < 24; i++) {
-//                int index = quadIndices[i];
-//
-//                gl.glNormal3dv(faceNormals, (i / 4) * 3);
-//
-//                gl.glVertex3dv(vertices, index * 3);
-//
-//            }
-//        }
-//        gl.glEnd();
-//        gl.glPopMatrix();
-
+    private void drawSelf(GL2 gl) {
         gl.glPolygonMode(GL2.GL_FRONT_AND_BACK, GL2.GL_LINE);
         for (int z = 0; z < myAltitude.length - 1; z++) {
             for (int x = 0; x < myAltitude[z].length - 1; x++) {
@@ -251,14 +179,17 @@ public class Terrain {
         gl.glPolygonMode(GL2.GL_FRONT_AND_BACK, GL2.GL_FILL);
     }
 
-    public void printAltitude() {
-        for (int i = 0; i < myAltitude.length; i++) {
-            for (int j = 0; j < myAltitude[i].length; j++) {
-                System.out.print(myAltitude[i][j] + ", ");
-            }
-            System.out.println();
+    public void draw(GL2 gl) {
+        gl.glPushMatrix();
+        drawSelf(gl);
+
+        for (Tree t : myTrees) {
+            t.draw(gl);
         }
-        System.out.println("-----------------");
+        for (Road r : myRoads) {
+            r.draw(gl);
+        }
+        gl.glPopMatrix();
     }
 
 }

@@ -5,8 +5,12 @@ import com.jogamp.opengl.util.gl2.GLUT;
 
 public class Avatar {
 
-    public Avatar() {
+    private double[] translation;
 
+    public Avatar() {
+        translation = new double[3];
+        translation[1] = 0.5;
+        translation[2] = 9;
     }
 
     public void draw(GL2 gl) {
@@ -27,5 +31,15 @@ public class Avatar {
         gl.glFrontFace(GL2.GL_CW);
         glut.glutSolidTeapot(1.5);
         gl.glFrontFace(GL2.GL_CCW);
+    }
+
+    public double[] getPos() {
+        return translation;
+    }
+
+    public void translate(double x, double y, double z) {
+        translation[0] += x;
+        translation[1] += y;
+        translation[2] += z;
     }
 }

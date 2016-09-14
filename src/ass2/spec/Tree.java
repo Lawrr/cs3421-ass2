@@ -1,5 +1,7 @@
 package ass2.spec;
 
+import com.jogamp.opengl.GL2;
+
 /**
  * COMMENT: Comment Tree 
  *
@@ -19,6 +21,107 @@ public class Tree {
     public double[] getPosition() {
         return myPos;
     }
-    
 
+
+    public void draw(GL2 gl) {
+        gl.glPushMatrix();
+        gl.glTranslated(myPos[0], myPos[1], myPos[2]);
+        int slices = 32;
+        double size = 0.3;
+    	double z1 = 2;
+    	double z2 = 0;
+    	gl.glPolygonMode(GL2.GL_FRONT_AND_BACK, GL2.GL_LINE);
+    	//Front circle
+
+    	gl.glBegin(GL2.GL_TRIANGLE_FAN);{
+
+    		 gl.glNormal3d(0,1,0);
+    		 gl.glVertex3d(0,z1,0);
+    		 double angleStep = 2*Math.PI/slices;
+             for (int i = 0; i <= slices ; i++){
+                 double a0 = 2*Math.PI - i * angleStep;
+                 double x0 = Math.cos(a0) * size;
+                 double y0 = Math.sin(a0) * size;
+
+                gl.glVertex3d(x0,z1,y0);
+
+             }
+
+
+    	}gl.glEnd();
+
+    	//Back circle
+    	gl.glBegin(GL2.GL_TRIANGLE_FAN);{
+
+   		 gl.glNormal3d(0,-1,0);
+   		 gl.glVertex3d(0,z2,0);
+   		 double angleStep = 2*Math.PI/slices;
+            for (int i = 0; i <= slices ; i++){
+                double a0 = i * angleStep;
+                double x0 = Math.cos(a0) * size;
+                double y0 = Math.sin(a0) * size;
+
+                gl.glVertex3d(x0,z2,y0);
+                System.out.println("Back " + x0 + " " + y0);
+            }
+
+
+    	}gl.glEnd();
+
+    	//Sides of the cylinder
+    	gl.glBegin(GL2.GL_QUADS);
+        {
+            double angleStep = 2*Math.PI/slices;
+            for (int i = 0; i <= slices ; i++){
+                double a0 = i * angleStep;
+                double a1 = ((i+1) % slices) * angleStep;
+
+                //Calculate vertices for the quad
+                double x0 = Math.cos(a0) * size;
+                double y0 = Math.sin(a0) * size;
+
+                double x1 = Math.cos(a1) * size;
+                double y1 = Math.sin(a1) * size;
+                //Calculation for face normal for each quad
+                //                     (x0,y0,z2)
+                //                     ^
+                //                     |  u = (0,0,z2-z1)
+                //                     |
+                //                     |
+                //(x1,y1,z1)<--------(x0,y0,z1)
+                //v = (x1-x0,y1-y0,0)
+                //
+                //
+                //
+                //
+                //
+                // u x v gives us the un-normalised normal
+                // u = (0,     0,   z2-z1)
+                // v = (x1-x0,y1-y0,0)
+
+
+                //If we want it to be smooth like a cylinder
+                //use different normals for each different x and y
+                gl.glNormal3d(x0, 0, y0);
+
+
+                gl.glVertex3d(x0, z1, y0);
+                gl.glVertex3d(x0, z2, y0);
+
+                //If we want it to be smooth like a cylinder
+                //use different normals for each different x and y
+                gl.glNormal3d(x1, 0, y1);
+
+                gl.glVertex3d(x1, z2, y1);
+                gl.glVertex3d(x1, z1, y1);
+
+
+            }
+
+        }
+        gl.glEnd();
+
+    	gl.glPolygonMode(GL2.GL_FRONT_AND_BACK, GL2.GL_FILL);
+        gl.glPopMatrix();
+    }
 }

@@ -1,5 +1,7 @@
 package ass2.spec;
 
+import com.jogamp.opengl.GL2;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -147,4 +149,7 @@ public class Road {
     }
 
 
+    public void draw(GL2 gl) {
+
+    }
 }
