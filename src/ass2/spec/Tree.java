@@ -24,13 +24,15 @@ public class Tree {
     }
 
 
-    public void draw(GL2 gl) {
+    public void draw(GL2 gl, Terrain terrain) {
         gl.glPushMatrix();
         gl.glTranslated(myPos[0], myPos[1], myPos[2]);
         int slices = 32;
-        double size = 0.3;
+        double width = 0.3;
+        double height = 2;
+        System.out.println(terrain.altitude(2.5, 2.5));
     	double z1 = 0;
-    	double z2 = 2;
+    	double z2 = height;
     	gl.glPolygonMode(GL2.GL_FRONT_AND_BACK, GL2.GL_LINE);
     	//Front circle
 
@@ -41,8 +43,8 @@ public class Tree {
     		 double angleStep = 2*Math.PI/slices;
              for (int i = 0; i <= slices ; i++){
                  double a0 = i * angleStep;
-                 double x0 = Math.cos(a0) * size;
-                 double y0 = Math.sin(a0) * size;
+                 double x0 = Math.cos(a0) * width;
+                 double y0 = Math.sin(a0) * width;
 
                 gl.glVertex3d(x0,z1,y0);
 
@@ -59,11 +61,11 @@ public class Tree {
    		 double angleStep = 2*Math.PI/slices;
             for (int i = 0; i <= slices ; i++){
                 double a0 = 2*Math.PI - i * angleStep;
-                double x0 = Math.cos(a0) * size;
-                double y0 = Math.sin(a0) * size;
+                double x0 = Math.cos(a0) * width;
+                double y0 = Math.sin(a0) * width;
 
                 gl.glVertex3d(x0,z2,y0);
-                System.out.println("Back " + x0 + " " + y0);
+//                System.out.println("Back " + x0 + " " + y0);
             }
 
 
@@ -78,11 +80,11 @@ public class Tree {
                 double a1 = ((i+1) % slices) * angleStep;
 
                 //Calculate vertices for the quad
-                double x0 = Math.cos(a0) * size;
-                double y0 = Math.sin(a0) * size;
+                double x0 = Math.cos(a0) * width;
+                double y0 = Math.sin(a0) * width;
 
-                double x1 = Math.cos(a1) * size;
-                double y1 = Math.sin(a1) * size;
+                double x1 = Math.cos(a1) * width;
+                double y1 = Math.sin(a1) * width;
                 //Calculation for face normal for each quad
                 //                     (x0,y0,z2)
                 //                     ^
@@ -122,7 +124,7 @@ public class Tree {
         }
         gl.glEnd();
 
-        double leavesRadius = size * 4;
+        double leavesRadius = width * 4;
         gl.glTranslated(0, z2 + leavesRadius -  leavesRadius * 0.25, 0);
         GLUT glut = new GLUT();
         glut.glutSolidSphere(leavesRadius, 40, 40);

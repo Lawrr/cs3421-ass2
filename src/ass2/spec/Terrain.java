@@ -119,24 +119,40 @@ public class Terrain {
      * @return
      */
     public double altitude(double x, double z) {
-        int startX = (int) x;
-        int endX = startX + 1;
-        double offsetX = endX - x;
+        // Interpolate x
+        int x1 = (int) x;
+        int x2 = (int) Math.ceil(x);
+        int z1 = (int) z;
+        int z2 = (int) Math.ceil(z);
 
-        int startZ = (int) z;
-        int endZ = startZ + 1;
-        double offsetZ = endZ - z;
-        // TODO
+        // Check which side of the triangle the point is on
 
-        double altitude = 0;
+        double fx1 = myAltitude[x1][z2];
+        double fx2 = myAltitude[x2][z2];
+        double fz1 = myAltitude[x2][z1];
+        double fz2 = myAltitude[x2][z2];
 
-        return altitude;
+        System.out.printf("x1: %d, x2: %d, z1: %d, z2: %d\n", x1, x2, z1, z2);
+        if (x1 == x2 && z1 == z2) return fx1;
+        if (x1 == x2) return (z - z1) / (z2 - z1) * fz2 + (z2 - z) / (z2 - z1) * fz1;
+        if (z1 == z2) return (x - x1) / (x2 - x1) * fx2 + (x2 - x) / (x2 - x1) * fx1;
+
+        // Interpolate x
+        double dx = (x - x1) / (x2 - x1) * fx2 + (x2 - x) / (x2 - x1) * fx1;
+
+        // Interpolate z
+        double dz = (x - x1) / (x2 - x1) * fx2 + (x2 - x) / (x2 - x1) * fz2;
+
+        double dy = (z - z1) / (z2 - z1) * dz + (z2 - z) / (z2 - z1) * dx;
+        System.out.printf("x %.2f y %.2fz %.2f, %.2f, %.2f\n", dx, dy, dz, (x - x1) / (x2 - x1) * fx2, fx2);
+
+        return dy;
     }
 
     /**
-     * Add a tree at the specified (x,z) point. 
+     * Add a tree at the specified (x,z) point.
      * The tree's y coordinate is calculated from the altitude of the terrain at that point.
-     * 
+     *
      * @param x
      * @param z
      */
@@ -150,8 +166,8 @@ public class Terrain {
     /**
      * Add a road. 
      * 
-     * @param x
-     * @param z
+     * @param width
+     * @param spine
      */
     public void addRoad(double width, double[] spine) {
         Road road = new Road(width, spine);
@@ -184,7 +200,7 @@ public class Terrain {
         drawSelf(gl);
 
         for (Tree t : myTrees) {
-            t.draw(gl);
+            t.draw(gl, this);
         }
         for (Road r : myRoads) {
             r.draw(gl);
