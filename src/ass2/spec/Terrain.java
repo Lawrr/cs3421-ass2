@@ -207,6 +207,22 @@ public class Terrain {
 
         for (int z = 0; z < myAltitude.length - 1; z++) {
             for (int x = 0; x < myAltitude[z].length - 1; x++) {
+                double[] rTrianglePoints = {x + 1, myAltitude[x + 1][z + 1], z + 1,         //bottom right
+                                            x + 1, myAltitude[x + 1][z], z,                 //top right
+                                            x, myAltitude[x][z + 1], z + 1};                //bottom left
+
+                double[] lTrianglePoints = {x, myAltitude[x][z + 1], z + 1,                 //bottom left
+                                            x + 1, myAltitude[x + 1][z], z,                 //top right
+                                            x, myAltitude[x][z], z};                        //top left
+
+                double rP1 = calcSurfaceNormal(rTrianglePoints)[0];
+                double rP2 = calcSurfaceNormal(rTrianglePoints)[1];
+                double rP3 = calcSurfaceNormal(rTrianglePoints)[2];
+
+                double rL1 = calcSurfaceNormal(lTrianglePoints)[0];
+                double rL2 = calcSurfaceNormal(lTrianglePoints)[1];
+                double rL3 = calcSurfaceNormal(lTrianglePoints)[2];
+
                 gl.glBegin(GL2.GL_TRIANGLES);
                 {
                     /*
@@ -218,7 +234,7 @@ public class Terrain {
                      */
 
                     // Right triangle
-                    gl.glNormal3d(x, myAltitude[x + 1][z + 1] + 1, z);
+                    gl.glNormal3d(rP1, rP2, rP3);
 
                     // Bottom right
                     gl.glTexCoord2d(1, 0);
@@ -231,7 +247,7 @@ public class Terrain {
                     gl.glVertex3d(x, myAltitude[x][z + 1], z + 1);
 
                     // Left triangle
-                    gl.glNormal3d(x, myAltitude[x][z + 1] + 1, z);
+                    gl.glNormal3d(rL1, rL2, rL3);
 
                     // Bottom left
                     gl.glTexCoord2d(0, 0);
@@ -248,6 +264,33 @@ public class Terrain {
         }
 
         gl.glBindTexture(GL2.GL_TEXTURE_2D, 0);
+    }
+
+    public double[] calcSurfaceNormal(double[] triangle) {
+        //points are x,y,z
+        //p1 = triangle[0,1,2]
+        //p2 = triangle[2,3,4]
+        //p3 = triangle[5,6,7]
+        //vectorA = p2-p1
+        double[] normal = new double[3];
+        double[] vectorA = new double[3];
+        vectorA[0] = triangle[2]-triangle[0];
+        vectorA[1] = triangle[3]-triangle[1];
+        vectorA[2] = triangle[4]-triangle[2];
+
+        //vectorB = p3-p1
+        double[] vectorB = new double[3];
+        vectorB[0] = triangle[5]-triangle[0];
+        vectorB[1] = triangle[6]-triangle[1];
+        vectorB[2] = triangle[7]-triangle[2];
+
+        //normal is cross product of vectorA and B
+        normal[0] = (vectorA[1]*vectorB[2]) - (vectorA[2]*vectorB[1]);
+        normal[1] = (vectorA[2]*vectorB[0]) - (vectorA[0]*vectorB[2]);
+        normal[2] = (vectorA[0]*vectorB[1]) - (vectorA[1]*vectorB[0]);
+
+        return normal;
+
     }
 
     public void draw(GL2 gl) {
