@@ -215,13 +215,9 @@ public class Terrain {
                                             x + 1, myAltitude[x + 1][z], z,                 //top right
                                             x, myAltitude[x][z], z};                        //top left
 
-                double rP1 = calcSurfaceNormal(rTrianglePoints)[0];
-                double rP2 = calcSurfaceNormal(rTrianglePoints)[1];
-                double rP3 = calcSurfaceNormal(rTrianglePoints)[2];
-
-                double rL1 = calcSurfaceNormal(lTrianglePoints)[0];
-                double rL2 = calcSurfaceNormal(lTrianglePoints)[1];
-                double rL3 = calcSurfaceNormal(lTrianglePoints)[2];
+                double avg1 = (calcSurfaceNormal(rTrianglePoints)[0] + calcSurfaceNormal(lTrianglePoints)[0])/2;
+                double avg2 = (calcSurfaceNormal(rTrianglePoints)[1] + calcSurfaceNormal(lTrianglePoints)[1])/2;
+                double avg3 = (calcSurfaceNormal(rTrianglePoints)[2] + calcSurfaceNormal(lTrianglePoints)[2])/2;
 
                 gl.glBegin(GL2.GL_TRIANGLES);
                 {
@@ -233,9 +229,9 @@ public class Terrain {
                        |/___|
                      */
 
+                    // Average normal of the 2 triangle
+                    gl.glNormal3d(avg1, avg2, avg3);
                     // Right triangle
-                    gl.glNormal3d(rP1, rP2, rP3);
-
                     // Bottom right
                     gl.glTexCoord2d(1, 0);
                     gl.glVertex3d(x + 1, myAltitude[x + 1][z + 1], z + 1);
@@ -247,8 +243,6 @@ public class Terrain {
                     gl.glVertex3d(x, myAltitude[x][z + 1], z + 1);
 
                     // Left triangle
-                    gl.glNormal3d(rL1, rL2, rL3);
-
                     // Bottom left
                     gl.glTexCoord2d(0, 0);
                     gl.glVertex3d(x, myAltitude[x][z + 1], z + 1);
