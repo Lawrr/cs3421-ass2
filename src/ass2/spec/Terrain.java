@@ -21,6 +21,8 @@ public class Terrain {
     private List<Road> myRoads;
     private float[] mySunlight;
 
+    private MyTexture texture;
+
     /**
      * Create a new terrain
      *
@@ -53,6 +55,16 @@ public class Terrain {
 
     public float[] getSunlight() {
         return mySunlight;
+    }
+
+    public void setTerrainTexture(MyTexture texture) {
+        this.texture = texture;
+    }
+
+    public void setTreeTrunkTexture(MyTexture texture) {
+        for (Tree t : myTrees) {
+            t.setTrunkTexture(texture);
+        }
     }
 
     /**
@@ -190,25 +202,52 @@ public class Terrain {
         gl.glMaterialfv(GL2.GL_FRONT, GL2.GL_SHININESS, matShine, 0);
         gl.glMaterialfv(GL2.GL_FRONT, GL2.GL_EMISSION, emm, 0);
 
+        // Set texture for terrain
+        gl.glBindTexture(GL2.GL_TEXTURE_2D, texture.getTextureId());
+
         for (int z = 0; z < myAltitude.length - 1; z++) {
             for (int x = 0; x < myAltitude[z].length - 1; x++) {
                 gl.glBegin(GL2.GL_TRIANGLES);
                 {
+                    /*
+                       _____
+                       |   /| L = Left triangle
+                       |L / | R = Right triangle
+                       | /R |
+                       |/___|
+                     */
+
+                    // Right triangle
                     gl.glNormal3d(x, myAltitude[x + 1][z + 1] + 1, z);
+
+                    // Bottom right
+                    gl.glTexCoord2d(1, 0);
                     gl.glVertex3d(x + 1, myAltitude[x + 1][z + 1], z + 1);
+                    // Top right
+                    gl.glTexCoord2d(1, 1);
                     gl.glVertex3d(x + 1, myAltitude[x + 1][z], z);
+                    // Bottom left
+                    gl.glTexCoord2d(0, 0);
                     gl.glVertex3d(x, myAltitude[x][z + 1], z + 1);
 
+                    // Left triangle
                     gl.glNormal3d(x, myAltitude[x][z + 1] + 1, z);
+
+                    // Bottom left
+                    gl.glTexCoord2d(0, 0);
                     gl.glVertex3d(x, myAltitude[x][z + 1], z + 1);
+                    // Top right
+                    gl.glTexCoord2d(1, 1);
                     gl.glVertex3d(x + 1, myAltitude[x + 1][z], z);
+                    // Top left
+                    gl.glTexCoord2d(0, 1);
                     gl.glVertex3d(x, myAltitude[x][z], z);
                 }
                 gl.glEnd();
-
             }
         }
-        gl.glPolygonMode(GL2.GL_FRONT_AND_BACK, GL2.GL_FILL);
+
+        gl.glBindTexture(GL2.GL_TEXTURE_2D, 0);
     }
 
     public void draw(GL2 gl) {
