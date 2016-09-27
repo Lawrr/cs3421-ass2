@@ -99,7 +99,15 @@ public class Game extends JFrame implements GLEventListener, KeyListener {
         // Camera
         double[] pos = avatar.getPos();
         pos[1] = myTerrain.altitude(pos[0], pos[2]);
-        glu.gluLookAt(pos[0] + 1, pos[1] + 1, pos[2] + 1, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
+
+        double a0 = Math.toRadians(avatar.getRotation());
+        double eyeX = pos[0];
+        double eyeY = pos[1] + 1;
+        double eyeZ = pos[2];
+        double centerX = eyeX + Math.cos(a0);
+        double centerY = eyeY;
+        double centerZ = eyeZ + Math.sin(a0);
+        glu.gluLookAt(eyeX, eyeY, eyeZ, centerX, centerY, centerZ, 0.0, 1.0, 0.0);
 
         setLighting(gl);
 
@@ -320,18 +328,16 @@ public class Game extends JFrame implements GLEventListener, KeyListener {
                 avatar.translate(0, -1, 0);
                 break;
             case KeyEvent.VK_UP:
-                avatar.translate(0, 0, -0.25);
+                avatar.move(avatar.getMoveSpeed());
                 break;
             case KeyEvent.VK_DOWN:
-                avatar.translate(0, 0, 0.25);
+                avatar.move(-avatar.getMoveSpeed());
                 break;
             case KeyEvent.VK_LEFT:
-                avatar.translate(-0.25, 0, 0);
-                avatar.rotate(30);
+                avatar.rotate(-avatar.getRotateSpeed());
                 break;
             case KeyEvent.VK_RIGHT:
-                avatar.translate(0.25, 0, 0);
-                avatar.rotate(-30);
+                avatar.rotate(avatar.getRotateSpeed());
                 break;
             default:
                 break;

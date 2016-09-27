@@ -8,6 +8,9 @@ public class Avatar {
     private double[] translation;
     private double rotation;
 
+    private double moveSpeed = 0.2;
+    private double rotateSpeed = 5;
+
     public Avatar() {
         translation = new double[3];
         translation[0] = 0;
@@ -52,8 +55,25 @@ public class Avatar {
     }
 
     public void rotate(double theta) {
-        rotation += theta;
-        // TODO
-        rotation %= 360;
+        rotation = (((rotation + theta) % 360) + 360) % 360;
+    }
+
+    public double getRotation() {
+        return rotation;
+    }
+
+    public void move(double distance) {
+        double a0 = Math.toRadians(rotation);
+        double moveX = Math.cos(a0) * distance;
+        double moveZ = Math.sin(a0) * distance;
+        translate(moveX, 0, moveZ);
+    }
+
+    public double getRotateSpeed() {
+        return rotateSpeed;
+    }
+
+    public double getMoveSpeed() {
+        return moveSpeed;
     }
 }
