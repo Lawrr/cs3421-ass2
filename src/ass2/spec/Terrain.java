@@ -193,7 +193,7 @@ public class Terrain {
     private void drawSelf(GL2 gl) {
         gl.glPolygonMode(GL2.GL_FRONT_AND_BACK, GL2.GL_FILL);
 
-        float matAmbAndDif[] = {0.0f, 1.0f, 0.0f, 1.0f};
+        float matAmbAndDif[] = {1.0f, 1.0f, 1.0f, 1.0f};
         float matSpec[] = {1.0f, 1.0f, 1.0f, 1.0f};
         float matShine[] = {50.0f};
         float emm[] = {0.0f, 0.0f, 0.0f, 1.0f};

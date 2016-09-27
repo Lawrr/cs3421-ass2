@@ -24,8 +24,9 @@ public class Game extends JFrame implements GLEventListener, KeyListener {
     public static final String TEXTURE_FILENAME_TERRAIN = "terrain.png";
     public static final String TEXTURE_EXT_TERRAIN = "png";
 
-    public static final String TEXTURE_FILENAME_TREE_TRUNK = "tree_trunk.jpg";
-    public static final String TEXTURE_EXT_TREE_TRUNK = "jpg";
+    // TODO find texture which is size of power of 2
+    public static final String TEXTURE_FILENAME_TREE_TRUNK = "tree_trunk.png";
+    public static final String TEXTURE_EXT_TREE_TRUNK = "png";
 
     private Terrain myTerrain;
     private Avatar avatar;
