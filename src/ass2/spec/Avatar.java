@@ -21,7 +21,7 @@ public class Avatar {
     public void draw(GL2 gl) {
         gl.glPushMatrix();
         gl.glTranslated(translation[0], translation[1], translation[2]);
-        gl.glRotated(rotation, 0, 1, 0);
+        gl.glRotated(-rotation, 0, 1, 0);
 
         //Draw Teapot
         float matAmbAndDif[] = {1.0f, 0.0f, 0.0f, 1.0f};

@@ -44,6 +44,7 @@ public class Game extends JFrame implements GLEventListener, KeyListener {
     //Global Settings
     private float g = 0.2f; // Global Ambient intensity.
     private int localViewer = 0; // Local viewpoint?
+    private boolean thirdPerson = true;
 
     public Game(Terrain terrain) {
         super("Assignment 2");
@@ -104,14 +105,21 @@ public class Game extends JFrame implements GLEventListener, KeyListener {
         double eyeX = pos[0];
         double eyeY = pos[1] + 1;
         double eyeZ = pos[2];
-        double centerX = eyeX + Math.cos(a0);
+        double towardsX = Math.cos(a0);
+        double towardsZ = Math.sin(a0);
+        double centerX = eyeX + towardsX;
         double centerY = eyeY;
-        double centerZ = eyeZ + Math.sin(a0);
-        glu.gluLookAt(eyeX, eyeY, eyeZ, centerX, centerY, centerZ, 0.0, 1.0, 0.0);
+        double centerZ = eyeZ + towardsZ;
+
+        if (thirdPerson) {
+            glu.gluLookAt(eyeX - towardsX * 2, eyeY + 1, eyeZ - towardsZ * 2, centerX, centerY, centerZ, 0.0, 1.0, 0.0);
+        } else {
+            glu.gluLookAt(eyeX - towardsX * 0.25, eyeY + 0.25, eyeZ - towardsZ * 0.25, centerX, centerY, centerZ, 0.0, 1.0, 0.0);
+        }
 
         setLighting(gl);
 
-        avatar.draw(gl);
+        if (thirdPerson) avatar.draw(gl);
         myTerrain.draw(gl);
 
         // Draw axises
@@ -338,6 +346,9 @@ public class Game extends JFrame implements GLEventListener, KeyListener {
                 break;
             case KeyEvent.VK_RIGHT:
                 avatar.rotate(avatar.getRotateSpeed());
+                break;
+            case KeyEvent.VK_SPACE:
+                thirdPerson = !thirdPerson;
                 break;
             default:
                 break;
