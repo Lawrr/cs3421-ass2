@@ -29,14 +29,14 @@ public class Game extends JFrame implements GLEventListener, KeyListener {
     private Terrain myTerrain;
     private Avatar avatar;
 
-    //Setting for light 0
+    //Setting for sun
     private float a = 0.2f; // Ambient white light intensity.
     private float d = 0.5f; // Diffuse white light intensity
     private float s = 0.2f; // Specular white light intensity.
 
     //Global Settings
     private float g = 0.2f; // Global Ambient intensity.
-    private int localViewer = 0; // Local viewpoint?
+    private int localViewer = 1; // Local viewpoint?
     private boolean thirdPerson = true;
 
     public Game(Terrain terrain) {

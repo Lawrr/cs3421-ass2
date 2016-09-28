@@ -13,9 +13,7 @@ public class Avatar {
 
     public Avatar() {
         translation = new double[3];
-        translation[0] = 0;
-        translation[1] = 0.5;
-        translation[2] = 9;
+        rotation = 45;
     }
 
     public void draw(GL2 gl) {

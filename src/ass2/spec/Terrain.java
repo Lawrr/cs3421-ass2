@@ -34,7 +34,9 @@ public class Terrain {
         myAltitude = new double[width][depth];
         myTrees = new ArrayList<Tree>();
         myRoads = new ArrayList<Road>();
-        mySunlight = new float[3];
+
+        mySunlight = new float[4];
+        mySunlight[3] = 0.0f;
     }
     
     public Terrain(Dimension size) {
@@ -215,9 +217,8 @@ public class Terrain {
                                             x + 1, myAltitude[x + 1][z], z,                 //top right
                                             x, myAltitude[x][z], z};                        //top left
 
-                double avg1 = (calcSurfaceNormal(rTrianglePoints)[0] + calcSurfaceNormal(lTrianglePoints)[0])/2;
-                double avg2 = (calcSurfaceNormal(rTrianglePoints)[1] + calcSurfaceNormal(lTrianglePoints)[1])/2;
-                double avg3 = (calcSurfaceNormal(rTrianglePoints)[2] + calcSurfaceNormal(lTrianglePoints)[2])/2;
+                double[] rNormal = calcSurfaceNormal(rTrianglePoints);
+                double[] lNormal = calcSurfaceNormal(lTrianglePoints);
 
                 gl.glBegin(GL2.GL_TRIANGLES);
                 {
@@ -230,7 +231,7 @@ public class Terrain {
                      */
 
                     // Average normal of the 2 triangle
-                    gl.glNormal3d(avg1, avg2, avg3);
+                    gl.glNormal3dv(rNormal, 0);
                     // Right triangle
                     // Bottom right
                     gl.glTexCoord2d(1, 0);
@@ -242,6 +243,7 @@ public class Terrain {
                     gl.glTexCoord2d(0, 0);
                     gl.glVertex3d(x, myAltitude[x][z + 1], z + 1);
 
+                    gl.glNormal3dv(lNormal, 0);
                     // Left triangle
                     // Bottom left
                     gl.glTexCoord2d(0, 0);
@@ -278,13 +280,10 @@ public class Terrain {
         vectorB[1] = triangle[6]-triangle[1];
         vectorB[2] = triangle[7]-triangle[2];
 
-        //normal is cross product of vectorA and B
-        normal[0] = (vectorA[1]*vectorB[2]) - (vectorA[2]*vectorB[1]);
-        normal[1] = (vectorA[2]*vectorB[0]) - (vectorA[0]*vectorB[2]);
-        normal[2] = (vectorA[0]*vectorB[1]) - (vectorA[1]*vectorB[0]);
+        // normal is cross product of vectorA and B
+        MathUtils.normCrossProd(vectorA, vectorB, normal);
 
         return normal;
-
     }
 
     public void draw(GL2 gl) {
