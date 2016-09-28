@@ -82,8 +82,10 @@ public class Game extends JFrame implements GLEventListener, KeyListener {
     @Override
     public void display(GLAutoDrawable drawable) {
         GL2 gl = drawable.getGL().getGL2();
+
         gl.glClearColor(0.7f, 0.9f, 1, 1);
         gl.glClear(GL2.GL_COLOR_BUFFER_BIT | GL2.GL_DEPTH_BUFFER_BIT);
+
         gl.glMatrixMode(GL2.GL_MODELVIEW);
         gl.glLoadIdentity();
 
@@ -144,14 +146,15 @@ public class Game extends JFrame implements GLEventListener, KeyListener {
         GL2 gl = drawable.getGL().getGL2();
 
         gl.glEnable(GL2.GL_DEPTH_TEST);
-        gl.glEnable(GL2.GL_LIGHTING);
         // Cull back faces.
         gl.glEnable(GL2.GL_CULL_FACE);
         gl.glCullFace(GL2.GL_BACK);
         // Turn on OpenGL texturing.
         gl.glEnable(GL2.GL_TEXTURE_2D);
 
-        // Enable lights
+        // Lighting
+        gl.glEnable(GL2.GL_LIGHTING);
+        gl.glEnable(GL2.GL_NORMALIZE);
         gl.glEnable(GL2.GL_LIGHT0);
 
         // Specify how texture values combine with current surface color values.
@@ -186,17 +189,15 @@ public class Game extends JFrame implements GLEventListener, KeyListener {
 
         float globAmb[] = { g, g, g, 1.0f };
 
-        // Sun properties
+        // Sun
         gl.glLightfv(GL2.GL_LIGHT0, GL2.GL_AMBIENT, lightAmb, 0);
         gl.glLightfv(GL2.GL_LIGHT0, GL2.GL_DIFFUSE, lightDif, 0);
         gl.glLightfv(GL2.GL_LIGHT0, GL2.GL_SPECULAR, lightSpec, 0);
+        gl.glLightfv(GL2.GL_LIGHT0, GL2.GL_POSITION, myTerrain.getSunlight(), 0);
 
         // Global light properties
         gl.glLightModelfv(GL2.GL_LIGHT_MODEL_AMBIENT, globAmb, 0); // Global ambient light.
         gl.glLightModeli(GL2.GL_LIGHT_MODEL_LOCAL_VIEWER, localViewer); // Enable local viewpoint
-
-        // Draw light
-        gl.glLightfv(GL2.GL_LIGHT0, GL2.GL_POSITION, myTerrain.getSunlight(), 0);
     }
 
     @Override
