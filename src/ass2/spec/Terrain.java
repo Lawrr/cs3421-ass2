@@ -230,7 +230,6 @@ public class Terrain {
                        |/___|
                      */
 
-                    // Average normal of the 2 triangle
                     gl.glNormal3dv(rNormal, 0);
                     // Right triangle
                     // Bottom right
@@ -265,20 +264,20 @@ public class Terrain {
     public double[] calcSurfaceNormal(double[] triangle) {
         //points are x,y,z
         //p1 = triangle[0,1,2]
-        //p2 = triangle[2,3,4]
-        //p3 = triangle[5,6,7]
+        //p2 = triangle[3,4,5]
+        //p3 = triangle[6,7,8]
         //vectorA = p2-p1
         double[] normal = new double[3];
         double[] vectorA = new double[3];
-        vectorA[0] = triangle[2]-triangle[0];
-        vectorA[1] = triangle[3]-triangle[1];
-        vectorA[2] = triangle[4]-triangle[2];
+        vectorA[0] = triangle[3]-triangle[0];
+        vectorA[1] = triangle[4]-triangle[1];
+        vectorA[2] = triangle[5]-triangle[2];
 
         //vectorB = p3-p1
         double[] vectorB = new double[3];
-        vectorB[0] = triangle[5]-triangle[0];
-        vectorB[1] = triangle[6]-triangle[1];
-        vectorB[2] = triangle[7]-triangle[2];
+        vectorB[0] = triangle[6]-triangle[0];
+        vectorB[1] = triangle[7]-triangle[1];
+        vectorB[2] = triangle[8]-triangle[2];
 
         // normal is cross product of vectorA and B
         MathUtils.normCrossProd(vectorA, vectorB, normal);
