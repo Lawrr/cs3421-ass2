@@ -62,18 +62,18 @@ public class Avatar {
         return rotation;
     }
 
-    public void move(double distance) {
-        double a0 = Math.toRadians(rotation);
-        double moveX = Math.cos(a0) * distance;
-        double moveZ = Math.sin(a0) * distance;
-        translate(moveX, 0, moveZ);
-    }
-
     public double getRotateSpeed() {
         return rotateSpeed;
     }
 
     public double getMoveSpeed() {
         return moveSpeed;
+    }
+
+    public void moveForward(double distance) {
+        double a0 = Math.toRadians(rotation);
+        double moveX = Math.cos(a0) * distance;
+        double moveZ = Math.sin(a0) * distance;
+        translate(moveX, 0, moveZ);
     }
 }
