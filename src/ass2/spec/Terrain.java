@@ -22,6 +22,7 @@ public class Terrain {
     private float[] mySunlight;
 
     private MyTexture texture;
+    private MyTexture treeLeavesTexture;
 
     /**
      * Create a new terrain
@@ -66,6 +67,12 @@ public class Terrain {
     public void setTreeTrunkTexture(MyTexture texture) {
         for (Tree t : myTrees) {
             t.setTrunkTexture(texture);
+        }
+    }
+
+    public void setTreeLeavesTexture(MyTexture texture) {
+        for (Tree t : myTrees) {
+            t.setLeavesTexture(texture);
         }
     }
 
@@ -150,7 +157,7 @@ public class Terrain {
         double fz1 = myAltitude[x2][z1];
         double fz2 = myAltitude[x2][z2];
 
-        System.out.printf("x1: %d, x2: %d, z1: %d, z2: %d\n", x1, x2, z1, z2);
+//        System.out.printf("x1: %d, x2: %d, z1: %d, z2: %d\n", x1, x2, z1, z2);
         if (x1 == x2 && z1 == z2) return fx1;
         if (x1 == x2) return (z - z1) / (z2 - z1) * fz2 + (z2 - z) / (z2 - z1) * fz1;
         if (z1 == z2) return (x - x1) / (x2 - x1) * fx2 + (x2 - x) / (x2 - x1) * fx1;
@@ -162,7 +169,7 @@ public class Terrain {
         double dz = (x - x1) / (x2 - x1) * fx2 + (x2 - x) / (x2 - x1) * fz2;
 
         double dy = (z - z1) / (z2 - z1) * dz + (z2 - z) / (z2 - z1) * dx;
-        System.out.printf("x %.2f y %.2fz %.2f, %.2f, %.2f\n", dx, dy, dz, (x - x1) / (x2 - x1) * fx2, fx2);
+//        System.out.printf("x %.2f y %.2fz %.2f, %.2f, %.2f\n", dx, dy, dz, (x - x1) / (x2 - x1) * fx2, fx2);
 
         return dy;
     }
@@ -297,5 +304,4 @@ public class Terrain {
         }
         gl.glPopMatrix();
     }
-
 }

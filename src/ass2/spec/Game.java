@@ -26,6 +26,9 @@ public class Game extends JFrame implements GLEventListener, KeyListener {
     public static final String TEXTURE_FILENAME_TREE_TRUNK = "tree_trunk.png";
     public static final String TEXTURE_EXT_TREE_TRUNK = "png";
 
+    public static final String TEXTURE_FILENAME_TREE_LEAVES = "tree_leaves.png";
+    public static final String TEXTURE_EXT_TREE_LEAVES = "png";
+
     private Terrain myTerrain;
     private Avatar avatar;
 
@@ -166,6 +169,9 @@ public class Game extends JFrame implements GLEventListener, KeyListener {
 
         MyTexture treeTrunkTexture = new MyTexture(gl, TEXTURE_FILENAME_TREE_TRUNK, TEXTURE_EXT_TREE_TRUNK, true);
         myTerrain.setTreeTrunkTexture(treeTrunkTexture);
+
+        MyTexture treeLeavesTexture = new MyTexture(gl, TEXTURE_FILENAME_TREE_LEAVES, TEXTURE_EXT_TREE_LEAVES, true);
+        myTerrain.setTreeLeavesTexture(treeLeavesTexture);
     }
 
     @Override
