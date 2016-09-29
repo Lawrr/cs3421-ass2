@@ -22,7 +22,6 @@ public class Terrain {
     private float[] mySunlight;
 
     private MyTexture texture;
-    private MyTexture treeLeavesTexture;
 
     /**
      * Create a new terrain
