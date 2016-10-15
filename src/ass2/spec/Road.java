@@ -179,6 +179,7 @@ public class Road {
             gl.glEnd();
         }
 
+        //Set back to FILL when you are finished - not needed but is a bug fix for some implementations on some platforms
         gl.glPolygonMode(GL2.GL_FRONT_AND_BACK, GL2.GL_FILL);
     }
 }
