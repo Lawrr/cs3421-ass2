@@ -119,23 +119,6 @@ public class Game extends JFrame implements GLEventListener, KeyListener {
 
         if (thirdPerson) avatar.draw(gl);
         myTerrain.draw(gl);
-
-        // Draw axises
-        gl.glPolygonMode(GL2.GL_FRONT_AND_BACK, GL2.GL_LINE);
-        gl.glBegin(GL2.GL_LINES);
-        gl.glColor4d(1, 0, 0, 1);
-        gl.glVertex3d(0, 0, 0);
-        gl.glVertex3d(100, 0, 0);
-        gl.glColor4d(0, 1, 0, 1);
-        gl.glVertex3d(0, 0, 0);
-        gl.glVertex3d(0, 100, 0);
-        gl.glColor4d(0, 0, 1, 1);
-        gl.glVertex3d(0, 0, 0);
-        gl.glVertex3d(0, 0, 100);
-        gl.glEnd();
-
-        //Set back to FILL when you are finished - not needed but is a bug fix for some implementations on some platforms
-        gl.glPolygonMode(GL2.GL_FRONT_AND_BACK, GL2.GL_FILL);
     }
 
     @Override
