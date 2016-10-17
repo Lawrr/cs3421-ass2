@@ -1,5 +1,6 @@
 package ass2.spec;
 
+import com.jogamp.common.nio.Buffers;
 import com.jogamp.opengl.*;
 import com.jogamp.opengl.awt.GLJPanel;
 import com.jogamp.opengl.glu.GLU;
@@ -10,6 +11,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.nio.FloatBuffer;
 
 
 /**
@@ -18,16 +20,6 @@ import java.io.FileNotFoundException;
  * @author malcolmr
  */
 public class Game extends JFrame implements GLEventListener, KeyListener {
-
-    public static final String TEXTURE_FILENAME_TERRAIN = "terrain.png";
-    public static final String TEXTURE_EXT_TERRAIN = "png";
-
-    // TODO find texture which is size of power of 2
-    public static final String TEXTURE_FILENAME_TREE_TRUNK = "tree_trunk.png";
-    public static final String TEXTURE_EXT_TREE_TRUNK = "png";
-
-    public static final String TEXTURE_FILENAME_TREE_LEAVES = "tree_leaves.png";
-    public static final String TEXTURE_EXT_TREE_LEAVES = "png";
 
     private Terrain myTerrain;
     private Avatar avatar;
@@ -147,14 +139,60 @@ public class Game extends JFrame implements GLEventListener, KeyListener {
         gl.glTexEnvf(GL2.GL_TEXTURE_ENV, GL2.GL_TEXTURE_ENV_MODE, GL2.GL_MODULATE);
 
         // Init textures
-        MyTexture terrainTexture = new MyTexture(gl, TEXTURE_FILENAME_TERRAIN, TEXTURE_EXT_TERRAIN, true);
+        MyTexture terrainTexture = new MyTexture(gl, Terrain.TEXTURE_FILENAME, Terrain.TEXTURE_EXT, true);
         myTerrain.setTerrainTexture(terrainTexture);
 
-        MyTexture treeTrunkTexture = new MyTexture(gl, TEXTURE_FILENAME_TREE_TRUNK, TEXTURE_EXT_TREE_TRUNK, true);
+        MyTexture treeTrunkTexture = new MyTexture(gl, Tree.TEXTURE_FILENAME_TRUNK, Tree.TEXTURE_EXT_TRUNK, true);
         myTerrain.setTreeTrunkTexture(treeTrunkTexture);
 
-        MyTexture treeLeavesTexture = new MyTexture(gl, TEXTURE_FILENAME_TREE_LEAVES, TEXTURE_EXT_TREE_LEAVES, true);
+        MyTexture treeLeavesTexture = new MyTexture(gl, Tree.TEXTURE_FILENAME_LEAVES, Tree.TEXTURE_EXT_LEAVES, true);
         myTerrain.setTreeLeavesTexture(treeLeavesTexture);
+
+        MyTexture monsterTexture = new MyTexture(gl, Monster.TEXTURE_FILENAME, Monster.TEXTURE_EXT, true);
+        myTerrain.setMonsterTexture(monsterTexture);
+
+        // Monster shader
+        try {
+            myTerrain.setMonsterShader(Shader.initShaders(gl, Monster.VERTEX_SHADER, Monster.FRAGMENT_SHADER));
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.exit(1);
+        }
+
+        // Monster VBO
+        int bufferIds[] = new int[1];
+        FloatBuffer posData = Buffers.newDirectFloatBuffer(Monster.POSITIONS);
+        FloatBuffer normData = Buffers.newDirectFloatBuffer(Monster.NORMALS);
+        FloatBuffer texData = Buffers.newDirectFloatBuffer(Monster.TEXTURES);
+
+        // Generate buffers
+        gl.glGenBuffers(bufferIds.length, bufferIds, 0);
+
+        // Bind buffer as array buffer
+        gl.glBindBuffer(GL.GL_ARRAY_BUFFER, bufferIds[0]);
+
+        // Set space for data
+        gl.glBufferData(GL2.GL_ARRAY_BUFFER, // Type of buffer
+                Monster.POSITIONS.length * Float.BYTES +
+                Monster.NORMALS.length * Float.BYTES +
+                Monster.TEXTURES.length * Float.BYTES, // Size of data
+                null, // Actual data
+                GL2.GL_STATIC_DRAW); // Don't intend to modify data after loading it
+
+        // Put data into buffers
+        gl.glBufferSubData(GL2.GL_ARRAY_BUFFER, 0,
+                Monster.POSITIONS.length * Float.BYTES, posData);
+
+        gl.glBufferSubData(GL2.GL_ARRAY_BUFFER, Monster.POSITIONS.length * Float.BYTES,
+                Monster.NORMALS.length * Float.BYTES, normData);
+
+        gl.glBufferSubData(GL2.GL_ARRAY_BUFFER, Monster.POSITIONS.length * Float.BYTES + Monster.NORMALS.length * Float.BYTES,
+                Monster.TEXTURES.length * Float.BYTES, texData);
+
+        myTerrain.setMonsterVbo(bufferIds, posData, normData, texData);
+
+        // Set back to default
+        gl.glBindBuffer(GL.GL_ARRAY_BUFFER, 0);
     }
 
     @Override

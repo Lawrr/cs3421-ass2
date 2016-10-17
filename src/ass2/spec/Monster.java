@@ -1,6 +1,9 @@
 package ass2.spec;
 
+import com.jogamp.opengl.GL;
 import com.jogamp.opengl.GL2;
+
+import java.nio.FloatBuffer;
 
 /**
  * COMMENT: Comment Tree 
@@ -9,9 +12,108 @@ import com.jogamp.opengl.GL2;
  */
 public class Monster {
 
+    public static final String TEXTURE_FILENAME = "res/monster.png";
+    public static final String TEXTURE_EXT = "png";
+
+    public static final String VERTEX_SHADER = "src/ass2/spec/MonsterVertex.glsl";
+    public static final String FRAGMENT_SHADER = "src/ass2/spec/MonsterFragment.glsl";
+
+    // TODO
+    public static final float POSITIONS[] = {
+            // Front
+            0, 0, 1,
+            1, 0, 1,
+            1, 1, 1,
+            0, 1, 1,
+
+            // Back
+            1, 0, 0,
+            0, 0, 0,
+            0, 1, 0,
+            1, 1, 0,
+
+            // Left
+            0, 0, 0,
+            0, 0, 1,
+            0, 1, 1,
+            0, 1, 0,
+
+            // Right
+            1, 0, 1,
+            1, 0, 0,
+            1, 1, 0,
+            1, 1, 1,
+
+            // Top
+            0, 1, 1,
+            1, 1, 1,
+            1, 1, 0,
+            0, 1, 0,
+
+            // Bottom
+            0, 0, 0,
+            1, 0, 0,
+            1, 0, 1,
+            0, 0, 1
+    };
+
+    public static final float NORMALS[] = {
+            // Front
+            0, 0, 1,
+            0, 0, 1,
+            0, 0, 1,
+            0, 0, 1,
+
+            // Back
+            0, 0, -1,
+            0, 0, -1,
+            0, 0, -1,
+            0, 0, -1,
+
+            // Left
+            -1, 0, 0,
+            -1, 0, 0,
+            -1, 0, 0,
+            -1, 0, 0,
+
+            // Right
+            1, 0, 0,
+            1, 0, 0,
+            1, 0, 0,
+            1, 0, 0,
+
+            // Top
+            0, 1, 0,
+            0, 1, 0,
+            0, 1, 0,
+            0, 1, 0,
+
+            // Bottom
+            0, -1, 0,
+            0, -1, 0,
+            0, -1, 0,
+            0, -1, 0
+    };
+
+    public static final float TEXTURES[] = {
+            0, 0, 1, 0, 1, 1, 0, 1,
+            0, 0, 1, 0, 1, 1, 0, 1,
+            0, 0, 1, 0, 1, 1, 0, 1,
+            0, 0, 1, 0, 1, 1, 0, 1,
+            0, 0, 1, 0, 1, 1, 0, 1,
+            0, 0, 1, 0, 1, 1, 0, 1
+    };
+
     private double[] myPos;
-    private MyTexture trunkTexture;
-    private MyTexture leavesTexture;
+
+    private MyTexture texture;
+
+    private int bufferIds[];
+    private FloatBuffer posData;
+    private FloatBuffer normData;
+    private FloatBuffer texData;
+
+    private int shader = 0;
 
     public Monster(double x, double y, double z) {
         myPos = new double[3];
@@ -24,21 +126,13 @@ public class Monster {
         return myPos;
     }
 
-
     public void draw(GL2 gl, Terrain terrain) {
         gl.glPushMatrix();
         gl.glTranslated(myPos[0], myPos[1], myPos[2]);
-        int slices = 32;
-        double width = 0.3;
-        double height = 2;
-//        System.out.println(terrain.altitude(2.5, 2.5));
-        double z1 = 0;
-        double z2 = height;
+        gl.glScaled(0.5, 0.5, 0.5);
         gl.glPolygonMode(GL2.GL_FRONT_AND_BACK, GL2.GL_FILL);
 
-        // Set texture for tree trunk
-        gl.glBindTexture(GL2.GL_TEXTURE_2D, trunkTexture.getTextureId());
-
+        // Set colours
         float matAmbAndDif[] = {1.0f, 1.0f, 1.0f, 1.0f};
         float matSpec[] = {1.0f, 1.0f, 1.0f, 1.0f};
         float matShine[] = {50.0f};
@@ -48,148 +142,70 @@ public class Monster {
         gl.glMaterialfv(GL2.GL_FRONT, GL2.GL_SHININESS, matShine, 0);
         gl.glMaterialfv(GL2.GL_FRONT, GL2.GL_EMISSION, emm, 0);
 
-        // Top
-        gl.glBegin(GL2.GL_TRIANGLE_FAN);{
-            gl.glNormal3d(0,1,0);
-            gl.glTexCoord2d(width, width);
-            gl.glVertex3d(0,z1,0);
-            double angleStep = 2*Math.PI/slices;
-            for (int i = 0; i <= slices ; i++){
-                double a0 = i * angleStep;
-                double x0 = Math.cos(a0) * width;
-                double y0 = Math.sin(a0) * width;
+        // Enable shader
+        gl.glUseProgram(shader);
 
-                gl.glTexCoord2d(width + x0, width + y0);
-                gl.glVertex3d(x0,z1,y0);
-            }
-        }gl.glEnd();
+        // Set texture
+        gl.glBindTexture(GL2.GL_TEXTURE_2D, texture.getTextureId());
 
-        // Bottom
-        gl.glBegin(GL2.GL_TRIANGLE_FAN);{
-            gl.glNormal3d(0,-1,0);
-            gl.glTexCoord2d(width, width);
-            gl.glVertex3d(0,z2,0);
-            double angleStep = 2*Math.PI/slices;
-            for (int i = 0; i <= slices ; i++){
-                double a0 = 2*Math.PI - i * angleStep;
-                double x0 = Math.cos(a0) * width;
-                double y0 = Math.sin(a0) * width;
+        // Tell the shader our texUnit is the 0th one
+        int texUnitLoc = gl.glGetUniformLocation(shader, "texUnit");
+        gl.glUniform1i(texUnitLoc, 0);
 
-                gl.glTexCoord2d(width + x0, width + y0);
-                gl.glVertex3d(x0,z2,y0);
-            }
-        }gl.glEnd();
+        // Bind the buffer we want to use
+        gl.glBindBuffer(GL.GL_ARRAY_BUFFER, bufferIds[0]);
 
-        // Sides
-        gl.glBegin(GL2.GL_QUAD_STRIP);
-        {
-            double angleStep = 2.0 * Math.PI / slices;
-            for (int i = 0; i <= slices; i++) {
-                double a0 = i * angleStep;
+        // Give location of the arrays in the buffer
+        int vertexPosLoc = gl.glGetAttribLocation(shader, "vertexPos");
+        int vertexNormLoc = gl.glGetAttribLocation(shader, "vertexNorm");
+        int vertexTexLoc = gl.glGetAttribLocation(shader, "vertexTex");
 
-                // Calculate vertices for the quad
-                double x0 = Math.cos(a0) * width;
-                double y0 = Math.sin(a0) * width;
-                double sCoord = 2.0 / slices * i;
+        gl.glEnableVertexAttribArray(vertexPosLoc);
+        gl.glVertexAttribPointer(vertexPosLoc,
+                3, // 3 coordinates per vertex
+                GL.GL_FLOAT, // Type of a coordinate
+                false,
+                0, // Stride
+                0); // Offset in array
 
-                gl.glNormal3d(x0, 0, y0);
+        gl.glEnableVertexAttribArray(vertexNormLoc);
+        gl.glVertexAttribPointer(vertexNormLoc, 3, GL.GL_FLOAT, true, 0, POSITIONS.length * Float.BYTES);
 
-                // Bottom
-                gl.glTexCoord2d(sCoord, 0);
-                gl.glVertex3d(x0, z1, y0);
+        gl.glEnableVertexAttribArray(vertexTexLoc);
+        gl.glVertexAttribPointer(vertexTexLoc, 2, GL.GL_FLOAT, false, 0, POSITIONS.length * Float.BYTES + NORMALS.length * Float.BYTES);
 
-                // Top
-                gl.glTexCoord2d(sCoord, 1);
-                gl.glVertex3d(x0, z2, y0);
-            }
+        // Set wrap mode for texture in S direction
+        gl.glTexParameteri(GL2.GL_TEXTURE_2D, GL2.GL_TEXTURE_WRAP_S, GL2.GL_REPEAT);
+        // Set wrap mode for texture in T direction
+        gl.glTexParameteri(GL2.GL_TEXTURE_2D, GL2.GL_TEXTURE_WRAP_T, GL2.GL_CLAMP_TO_EDGE);
 
-        }
-        gl.glEnd();
+        // Draw
+        gl.glDrawArrays(GL2.GL_QUADS, 0, POSITIONS.length / 3);
 
+        // Disable
+        gl.glDisableVertexAttribArray(vertexPosLoc);
+        gl.glDisableVertexAttribArray(vertexNormLoc);
+        gl.glDisableVertexAttribArray(vertexTexLoc);
 
-        // Leaves
-        gl.glBindTexture(GL2.GL_TEXTURE_2D, leavesTexture.getTextureId());
-
-        double leavesRadius = width * 4;
-        gl.glTranslated(0, z2 + leavesRadius -  leavesRadius * 0.25, 0);
-
-//        matAmbAndDif = new float[]{0.0f, 0.5f, 0.1f, 1.0f};
-        matAmbAndDif = new float[]{1.0f, 1.0f, 1.0f, 1.0f};
-        matSpec = new float[]{1.0f, 1.0f, 1.0f, 1.0f};
-        matShine = new float[]{50.0f};
-        emm = new float[]{0.0f, 0.0f, 0.0f, 1.0f};
-        gl.glMaterialfv(GL2.GL_FRONT, GL2.GL_AMBIENT_AND_DIFFUSE, matAmbAndDif, 0);
-        gl.glMaterialfv(GL2.GL_FRONT, GL2.GL_SPECULAR, matSpec, 0);
-        gl.glMaterialfv(GL2.GL_FRONT, GL2.GL_SHININESS, matShine, 0);
-        gl.glMaterialfv(GL2.GL_FRONT, GL2.GL_EMISSION, emm, 0);
-
-        int numStacks = 32;
-        int numSlices = 20;
-
-        double deltaT = 0.5/numStacks;
-        int ang;
-        int delang = 360/numSlices;
-        double x1,x2,y1,y2;
-        for (int i = 0; i < numStacks; i++) {
-            double t = -0.25 + i*deltaT;
-
-            gl.glBegin(GL2.GL_TRIANGLE_STRIP);
-            for(int j = 0; j <= numSlices; j++) {
-                ang = j*delang;
-                x1=leavesRadius * r(t)*Math.cos((double)ang*2.0*Math.PI/360.0);
-                x2=leavesRadius * r(t+deltaT)*Math.cos((double)ang*2.0*Math.PI/360.0);
-                y1 = leavesRadius * getY(t);
-
-                z1=leavesRadius * r(t)*Math.sin((double)ang*2.0*Math.PI/360.0);
-                z2= leavesRadius * r(t+deltaT)*Math.sin((double)ang*2.0*Math.PI/360.0);
-                y2 = leavesRadius * getY(t+deltaT);
-
-                double normal[] = {x1,y1,z1};
-
-
-                MathUtils.normalize(normal);
-
-                gl.glNormal3dv(normal,0);
-                double tCoord = 2.0/numStacks * i; //Or * 2 to repeat label
-                double sCoord = 2.0/numSlices * j;
-                gl.glTexCoord2d(sCoord,tCoord);
-                gl.glVertex3d(x1,y1,z1);
-                normal[0] = x2;
-                normal[1] = y2;
-                normal[2] = z2;
-
-
-                MathUtils.normalize(normal);
-
-                gl.glNormal3dv(normal,0);
-                tCoord = 2.0/numStacks * (i+1); //Or * 2 to repeat label
-                gl.glTexCoord2d(sCoord,tCoord);
-                gl.glVertex3d(x2,y2,z2);
-
-            }
-            gl.glEnd();
-        }
-
+        gl.glUseProgram(0);
+        gl.glBindBuffer(GL.GL_ARRAY_BUFFER, 0);
         gl.glBindTexture(GL2.GL_TEXTURE_2D, 0);
 
         gl.glPopMatrix();
     }
 
-    private double r(double t) {
-        double x = Math.cos(2 * Math.PI * t);
-        return x;
+    public void setTexture(MyTexture texture) {
+        this.texture = texture;
     }
 
-    private double getY(double t) {
-        double y = Math.sin(2 * Math.PI * t);
-        return y;
+    public void setShader(int shader) {
+        this.shader = shader;
     }
 
-    public void setTrunkTexture(MyTexture texture) {
-        trunkTexture = texture;
-    }
-
-    public void setLeavesTexture(MyTexture texture) {
-        leavesTexture = texture;
+    public void setVbo(int bufferIds[], FloatBuffer posData, FloatBuffer normData, FloatBuffer texData) {
+        this.bufferIds = bufferIds;
+        this.posData = posData;
+        this.normData = normData;
+        this.texData = texData;
     }
 }

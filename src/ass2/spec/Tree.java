@@ -9,6 +9,13 @@ import com.jogamp.opengl.GL2;
  */
 public class Tree {
 
+    // TODO find texture which is size of power of 2
+    public static final String TEXTURE_FILENAME_TRUNK = "res/tree_trunk.png";
+    public static final String TEXTURE_EXT_TRUNK = "png";
+
+    public static final String TEXTURE_FILENAME_LEAVES = "res/tree_leaves.png";
+    public static final String TEXTURE_EXT_LEAVES = "png";
+
     private double[] myPos;
     private MyTexture trunkTexture;
     private MyTexture leavesTexture;

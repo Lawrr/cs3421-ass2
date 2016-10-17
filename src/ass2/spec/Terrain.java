@@ -2,7 +2,8 @@ package ass2.spec;
 
 import com.jogamp.opengl.GL2;
 
-import java.awt.Dimension;
+import java.awt.*;
+import java.nio.FloatBuffer;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,9 +16,13 @@ import java.util.List;
  */
 public class Terrain {
 
+    public static final String TEXTURE_FILENAME = "res/terrain.png";
+    public static final String TEXTURE_EXT = "png";
+
     private Dimension mySize;
     private double[][] myAltitude;
     private List<Tree> myTrees;
+    private List<Monster> myMonsters;
     private List<Road> myRoads;
     private float[] mySunlight;
 
@@ -33,6 +38,7 @@ public class Terrain {
         mySize = new Dimension(width, depth);
         myAltitude = new double[width][depth];
         myTrees = new ArrayList<Tree>();
+        myMonsters = new ArrayList<Monster>();
         myRoads = new ArrayList<Road>();
 
         mySunlight = new float[4];
@@ -72,6 +78,24 @@ public class Terrain {
     public void setTreeLeavesTexture(MyTexture texture) {
         for (Tree t : myTrees) {
             t.setLeavesTexture(texture);
+        }
+    }
+
+    public void setMonsterTexture(MyTexture texture) {
+        for (Monster m : myMonsters) {
+            m.setTexture(texture);
+        }
+    }
+
+    public void setMonsterShader(int shader) {
+        for (Monster m : myMonsters) {
+            m.setShader(shader);
+        }
+    }
+
+    public void setMonsterVbo(int[] bufferIds, FloatBuffer posData, FloatBuffer normData, FloatBuffer texData) {
+        for (Monster m : myMonsters) {
+            m.setVbo(bufferIds, posData, normData, texData);
         }
     }
 
@@ -186,6 +210,18 @@ public class Terrain {
         myTrees.add(tree);
     }
 
+    /**
+     * Add a monster at the specified (x,z) point.
+     * The monster's y coordinate is calculated from the altitude of the terrain at that point.
+     *
+     * @param x
+     * @param z
+     */
+    public void addMonster(double x, double z) {
+        double y = altitude(x, z);
+        Monster monster = new Monster(x, y, z);
+        myMonsters.add(monster);
+    }
 
     /**
      * Add a road. 
@@ -297,6 +333,9 @@ public class Terrain {
 
         for (Tree t : myTrees) {
             t.draw(gl, this);
+        }
+        for (Monster m : myMonsters) {
+            m.draw(gl, this);
         }
         for (Road r : myRoads) {
             r.draw(gl, this);

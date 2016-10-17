@@ -1,16 +1,11 @@
 package ass2.spec;
 
-import java.awt.Dimension;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.Reader;
-
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.json.JSONTokener;
+
+import java.awt.*;
+import java.io.*;
 
 /**
  * COMMENT: Comment LevelIO 
@@ -60,7 +55,17 @@ public class LevelIO {
                 terrain.addTree(x, z);
             }
         }
-        
+
+        if (jsonTerrain.has("monsters")) {
+            JSONArray jsonMonsters = jsonTerrain.getJSONArray("monsters");
+            for (int i = 0; i < jsonMonsters.length(); i++) {
+                JSONObject jsonMonster = jsonMonsters.getJSONObject(i);
+                double x = jsonMonster.getDouble("x");
+                double z = jsonMonster.getDouble("z");
+                terrain.addMonster(x, z);
+            }
+        }
+
         if (jsonTerrain.has("roads")) {
             JSONArray jsonRoads = jsonTerrain.getJSONArray("roads");
             for (int i = 0; i < jsonRoads.length(); i++) {
