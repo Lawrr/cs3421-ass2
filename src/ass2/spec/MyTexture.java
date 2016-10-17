@@ -1,18 +1,17 @@
 package ass2.spec;
 
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
-import java.nio.ByteBuffer;
-
-import javax.imageio.ImageIO;
-
 import com.jogamp.opengl.GL;
 import com.jogamp.opengl.GL2;
 import com.jogamp.opengl.GLProfile;
 import com.jogamp.opengl.util.awt.ImageUtil;
 import com.jogamp.opengl.util.texture.TextureData;
 import com.jogamp.opengl.util.texture.awt.AWTTextureIO;
+
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+import java.nio.ByteBuffer;
 
 public class MyTexture {
 
@@ -24,7 +23,7 @@ public class MyTexture {
 
     //Create a texture from a file. Make sure the file has a width and height
     //that is a power of 2
-    public MyTexture(GL2 gl, String fileName,String extension, boolean mipmaps) {
+    public MyTexture(GL2 gl, String fileName, boolean mipmaps) {
         mipMapEnabled = mipmaps;
         TextureData data = null;
         try {

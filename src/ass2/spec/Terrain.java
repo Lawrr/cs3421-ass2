@@ -16,8 +16,7 @@ import java.util.List;
  */
 public class Terrain {
 
-    public static final String TEXTURE_FILENAME = "res/terrain.png";
-    public static final String TEXTURE_EXT = "png";
+    public static final String TEXTURE = Game.TEXTURES_DIRECTORY + "terrain.png";
 
     private Dimension mySize;
     private double[][] myAltitude;

@@ -12,11 +12,10 @@ import java.nio.FloatBuffer;
  */
 public class Monster {
 
-    public static final String TEXTURE_FILENAME = "res/monster.png";
-    public static final String TEXTURE_EXT = "png";
+    public static final String TEXTURE = Game.TEXTURES_DIRECTORY + "monster.png";
 
-    public static final String VERTEX_SHADER = "src/ass2/spec/MonsterVertex.glsl";
-    public static final String FRAGMENT_SHADER = "src/ass2/spec/MonsterFragment.glsl";
+    public static final String VERTEX_SHADER = Game.SHADERS_DIRECTORY + "MonsterVertex.glsl";
+    public static final String FRAGMENT_SHADER = Game.SHADERS_DIRECTORY + "MonsterFragment.glsl";
 
     // TODO
     public static final float POSITIONS[] = {

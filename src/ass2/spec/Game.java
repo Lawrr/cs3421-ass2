@@ -21,6 +21,10 @@ import java.nio.FloatBuffer;
  */
 public class Game extends JFrame implements GLEventListener, KeyListener {
 
+    public static final String RESOURCES_DIRECTORY = "res" + File.separator;
+    public static final String TEXTURES_DIRECTORY = RESOURCES_DIRECTORY + "textures" + File.separator;
+    public static final String SHADERS_DIRECTORY = RESOURCES_DIRECTORY + "shaders" + File.separator;
+
     private Terrain myTerrain;
     private Avatar avatar;
 
@@ -139,16 +143,16 @@ public class Game extends JFrame implements GLEventListener, KeyListener {
         gl.glTexEnvf(GL2.GL_TEXTURE_ENV, GL2.GL_TEXTURE_ENV_MODE, GL2.GL_MODULATE);
 
         // Init textures
-        MyTexture terrainTexture = new MyTexture(gl, Terrain.TEXTURE_FILENAME, Terrain.TEXTURE_EXT, true);
+        MyTexture terrainTexture = new MyTexture(gl, Terrain.TEXTURE, true);
         myTerrain.setTerrainTexture(terrainTexture);
 
-        MyTexture treeTrunkTexture = new MyTexture(gl, Tree.TEXTURE_FILENAME_TRUNK, Tree.TEXTURE_EXT_TRUNK, true);
+        MyTexture treeTrunkTexture = new MyTexture(gl, Tree.TEXTURE_TRUNK, true);
         myTerrain.setTreeTrunkTexture(treeTrunkTexture);
 
-        MyTexture treeLeavesTexture = new MyTexture(gl, Tree.TEXTURE_FILENAME_LEAVES, Tree.TEXTURE_EXT_LEAVES, true);
+        MyTexture treeLeavesTexture = new MyTexture(gl, Tree.TEXTURE_LEAVES, true);
         myTerrain.setTreeLeavesTexture(treeLeavesTexture);
 
-        MyTexture monsterTexture = new MyTexture(gl, Monster.TEXTURE_FILENAME, Monster.TEXTURE_EXT, true);
+        MyTexture monsterTexture = new MyTexture(gl, Monster.TEXTURE, true);
         myTerrain.setMonsterTexture(monsterTexture);
 
         // Monster shader
@@ -231,7 +235,7 @@ public class Game extends JFrame implements GLEventListener, KeyListener {
     public void keyPressed(KeyEvent ev) {
         switch (ev.getKeyCode()) {
             case KeyEvent.VK_L:
-                if(localViewer == 1) localViewer = 0;
+                if (localViewer == 1) localViewer = 0;
                 else localViewer = 1;
                 System.out.println("Local viewer " + localViewer);
                 break;
