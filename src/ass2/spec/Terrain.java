@@ -321,7 +321,7 @@ public class Terrain {
         vectorB[2] = triangle[8]-triangle[2];
 
         // normal is cross product of vectorA and B
-        MathUtils.normCrossProd(vectorA, vectorB, normal);
+        MathUtil.normCrossProd(vectorA, vectorB, normal);
 
         return normal;
     }

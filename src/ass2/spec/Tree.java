@@ -152,7 +152,7 @@ public class Tree {
                 double normal[] = {x1,y1,z1};
 
 
-                MathUtils.normalize(normal);
+                MathUtil.normalize(normal);
 
                 gl.glNormal3dv(normal,0);
                 double tCoord = 2.0/numStacks * i; //Or * 2 to repeat label
@@ -164,7 +164,7 @@ public class Tree {
                 normal[2] = z2;
 
 
-                MathUtils.normalize(normal);
+                MathUtil.normalize(normal);
 
                 gl.glNormal3dv(normal,0);
                 tCoord = 2.0/numStacks * (i+1); //Or * 2 to repeat label

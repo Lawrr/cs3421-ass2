@@ -27,6 +27,7 @@ public class Game extends JFrame implements GLEventListener, KeyListener {
 
     private Terrain myTerrain;
     private Avatar avatar;
+    private RainSystem rainSystem;
 
     //Setting for sun
     private float a = 0.2f; // Ambient white light intensity.
@@ -37,11 +38,13 @@ public class Game extends JFrame implements GLEventListener, KeyListener {
     private float g = 0.2f; // Global Ambient intensity.
     private int localViewer = 1; // Local viewpoint?
     private boolean thirdPerson = true;
+    private boolean raining = false;
 
     public Game(Terrain terrain) {
         super("Assignment 2");
         myTerrain = terrain;
         avatar = new Avatar();
+        rainSystem = new RainSystem(avatar);
     }
 
     /**
@@ -114,7 +117,10 @@ public class Game extends JFrame implements GLEventListener, KeyListener {
         setLighting(gl);
 
         if (thirdPerson) avatar.draw(gl);
+
         myTerrain.draw(gl);
+
+        if (raining) rainSystem.draw(gl);
     }
 
     @Override
@@ -131,8 +137,10 @@ public class Game extends JFrame implements GLEventListener, KeyListener {
         // Cull back faces.
         gl.glEnable(GL2.GL_CULL_FACE);
         gl.glCullFace(GL2.GL_BACK);
-        // Turn on OpenGL texturing.
+        // Turn on OpenGL texturing
         gl.glEnable(GL2.GL_TEXTURE_2D);
+
+        gl.glHint(GL2.GL_PERSPECTIVE_CORRECTION_HINT, GL2.GL_NICEST);
 
         // Lighting
         gl.glEnable(GL2.GL_LIGHTING);
@@ -154,6 +162,9 @@ public class Game extends JFrame implements GLEventListener, KeyListener {
 
         MyTexture monsterTexture = new MyTexture(gl, Monster.TEXTURE, true);
         myTerrain.setMonsterTexture(monsterTexture);
+
+        MyTexture rainTexture = new MyTexture(gl, RainSystem.TEXTURE, true);
+        rainSystem.setTexture(rainTexture);
 
         // Monster shader
         try {
@@ -260,6 +271,9 @@ public class Game extends JFrame implements GLEventListener, KeyListener {
                 } else {
                     if (s > 0.0) s -= 0.05;
                 }
+                break;
+            case KeyEvent.VK_R:
+                raining = !raining;
                 break;
             case KeyEvent.VK_UP:
                 avatar.moveForward(avatar.getMoveSpeed());
