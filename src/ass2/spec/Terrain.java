@@ -24,6 +24,7 @@ public class Terrain {
     private List<Monster> myMonsters;
     private List<Road> myRoads;
     private float[] mySunlight;
+    private boolean directionalLight = true;
 
     private MyTexture texture;
 
@@ -340,5 +341,13 @@ public class Terrain {
             r.draw(gl, this);
         }
         gl.glPopMatrix();
+    }
+
+    public void setIsDirectionalLight(boolean directionalLight) {
+        this.directionalLight = directionalLight;
+    }
+
+    public boolean isDirectionalLight() {
+        return directionalLight;
     }
 }

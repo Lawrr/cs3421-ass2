@@ -29,16 +29,25 @@ public class Game extends JFrame implements GLEventListener, KeyListener {
     private Avatar avatar;
     private RainSystem rainSystem;
 
-    //Setting for sun
-    private float a = 0.2f; // Ambient white light intensity.
-    private float d = 0.5f; // Diffuse white light intensity
-    private float s = 0.2f; // Specular white light intensity.
+    // Setting for sun
+    private static final float aSun = 0.0f; // Ambient white light intensity.
+    private static final float dSun = 0.5f; // Diffuse white light intensity
+    private static final float sSun = 0.2f; // Specular white light intensity.
+    private static final float gSun = 0.2f; // Global Ambient intensity.
+
+    // Setting for torch
+    private static final float aTorch = 0.4f; // Ambient white light intensity.
+    private static final float dTorch = 0.8f; // Diffuse white light intensity
+    private static final float sTorch = 0.2f; // Specular white light intensity.
+    private static final float gTorch = 0.1f; // Global Ambient intensity.
+    private static final float torchAngle = 45;
+    private static final float torchExponent = 4;
 
     //Global Settings
-    private float g = 0.2f; // Global Ambient intensity.
     private int localViewer = 1; // Local viewpoint?
     private boolean thirdPerson = true;
     private boolean raining = false;
+    private boolean darkMode = false;
 
     public Game(Terrain terrain) {
         super("Assignment 2");
@@ -85,7 +94,11 @@ public class Game extends JFrame implements GLEventListener, KeyListener {
     public void display(GLAutoDrawable drawable) {
         GL2 gl = drawable.getGL().getGL2();
 
-        gl.glClearColor(0.7f, 0.9f, 1, 1);
+        if (!darkMode) {
+            gl.glClearColor(0.7f, 0.9f, 1, 1);
+        } else {
+            gl.glClearColor(0.05f, 0.05f, 0.05f, 1);
+        }
         gl.glClear(GL2.GL_COLOR_BUFFER_BIT | GL2.GL_DEPTH_BUFFER_BIT);
 
         gl.glMatrixMode(GL2.GL_MODELVIEW);
@@ -151,6 +164,16 @@ public class Game extends JFrame implements GLEventListener, KeyListener {
         gl.glTexEnvf(GL2.GL_TEXTURE_ENV, GL2.GL_TEXTURE_ENV_MODE, GL2.GL_MODULATE);
 
         // Init textures
+        setTextures(gl);
+
+        // Monster shader
+        setShaders(gl);
+
+        // Monster VBO
+        setVbos(gl);
+    }
+
+    private void setTextures(GL2 gl) {
         MyTexture terrainTexture = new MyTexture(gl, Terrain.TEXTURE, true);
         myTerrain.setTerrainTexture(terrainTexture);
 
@@ -165,16 +188,18 @@ public class Game extends JFrame implements GLEventListener, KeyListener {
 
         MyTexture rainTexture = new MyTexture(gl, RainSystem.TEXTURE, true);
         rainSystem.setTexture(rainTexture);
+    }
 
-        // Monster shader
+    private void setShaders(GL2 gl) {
         try {
             myTerrain.setMonsterShader(Shader.initShaders(gl, Monster.VERTEX_SHADER, Monster.FRAGMENT_SHADER));
         } catch (Exception e) {
             e.printStackTrace();
             System.exit(1);
         }
+    }
 
-        // Monster VBO
+    private void setVbos(GL2 gl) {
         int bufferIds[] = new int[1];
         FloatBuffer posData = Buffers.newDirectFloatBuffer(Monster.POSITIONS);
         FloatBuffer normData = Buffers.newDirectFloatBuffer(Monster.NORMALS);
@@ -189,8 +214,8 @@ public class Game extends JFrame implements GLEventListener, KeyListener {
         // Set space for data
         gl.glBufferData(GL2.GL_ARRAY_BUFFER, // Type of buffer
                 Monster.POSITIONS.length * Float.BYTES +
-                Monster.NORMALS.length * Float.BYTES +
-                Monster.TEXTURES.length * Float.BYTES, // Size of data
+                        Monster.NORMALS.length * Float.BYTES +
+                        Monster.TEXTURES.length * Float.BYTES, // Size of data
                 null, // Actual data
                 GL2.GL_STATIC_DRAW); // Don't intend to modify data after loading it
 
@@ -224,18 +249,50 @@ public class Game extends JFrame implements GLEventListener, KeyListener {
     }
 
     public void setLighting(GL2 gl) {
-        // Sun property vectors
-        float lightAmb[] = { a, a, a, 1.0f };
-        float lightDif[] = { d, d, d, 1.0f };
-        float lightSpec[] = { s, s, s, 1.0f };
+        float amb[];
+        float dif[];
+        float spec[];
+        float globAmb[];
+        float pos[];
 
-        float globAmb[] = { g, g, g, 1.0f };
+        if (!darkMode) {
+            // Sun
+            amb = new float[]{ aSun, aSun, aSun, 1 };
+            dif = new float[]{ dSun, dSun, dSun, 1 };
+            spec = new float[]{ sSun, sSun, sSun, 1 };
+            globAmb = new float[]{ gSun, gSun, gSun, 1 };
+            pos = myTerrain.getSunlight();
 
-        // Sun
-        gl.glLightfv(GL2.GL_LIGHT0, GL2.GL_AMBIENT, lightAmb, 0);
-        gl.glLightfv(GL2.GL_LIGHT0, GL2.GL_DIFFUSE, lightDif, 0);
-        gl.glLightfv(GL2.GL_LIGHT0, GL2.GL_SPECULAR, lightSpec, 0);
-        gl.glLightfv(GL2.GL_LIGHT0, GL2.GL_POSITION, myTerrain.getSunlight(), 0);
+            gl.glLightf(GL2.GL_LIGHT0, GL2.GL_SPOT_CUTOFF, 180);
+        } else {
+            // Torch
+            amb = new float[]{ aTorch, aTorch, aTorch, 1 };
+            dif = new float[]{ dTorch, dTorch, dTorch, 1 };
+            spec = new float[]{ sTorch, sTorch, sTorch, 1 };
+            globAmb = new float[]{ gTorch, gTorch, gTorch, 1 };
+
+            pos = new float[4];
+            double avatarPos[] = avatar.getPos();
+            for (int i = 0; i < 3; i++) {
+                pos[i] = (float) avatarPos[i];
+            }
+            // Set as point light
+            pos[3] = 1;
+
+            double a0 = Math.toRadians(avatar.getRotation());
+            float towardsX = (float) Math.cos(a0);
+            float towardsY = 0;
+            float towardsZ = (float) Math.sin(a0);
+
+            gl.glLightf(GL2.GL_LIGHT0, GL2.GL_SPOT_CUTOFF, torchAngle);
+        	gl.glLightfv(GL2.GL_LIGHT0, GL2.GL_SPOT_DIRECTION, new float[]{towardsX, towardsY, towardsZ}, 0);
+        	gl.glLightf(GL2.GL_LIGHT0, GL2.GL_SPOT_EXPONENT, torchExponent);
+        }
+
+        gl.glLightfv(GL2.GL_LIGHT0, GL2.GL_AMBIENT, amb, 0);
+        gl.glLightfv(GL2.GL_LIGHT0, GL2.GL_DIFFUSE, dif, 0);
+        gl.glLightfv(GL2.GL_LIGHT0, GL2.GL_SPECULAR, spec, 0);
+        gl.glLightfv(GL2.GL_LIGHT0, GL2.GL_POSITION, pos, 0);
 
         // Global light properties
         gl.glLightModelfv(GL2.GL_LIGHT_MODEL_AMBIENT, globAmb, 0); // Global ambient light.
@@ -250,27 +307,9 @@ public class Game extends JFrame implements GLEventListener, KeyListener {
                 else localViewer = 1;
                 System.out.println("Local viewer " + localViewer);
                 break;
-            case KeyEvent.VK_D:
-                if (ev.isShiftDown()) {
-                    if (d < 1.0) d += 0.05;
-                } else {
-                    if (d > 0.0) d -= 0.05;
-                }
-
-                break;
-            case KeyEvent.VK_A:
-                if (ev.isShiftDown()) {
-                    if (a < 1.0) a += 0.05;
-                } else {
-                    if (a > 0.0) a -= 0.05;
-                }
-                break;
-            case KeyEvent.VK_S:
-                if (ev.isShiftDown()) {
-                    if (s < 1.0) s += 0.05;
-                } else {
-                    if (s > 0.0) s -= 0.05;
-                }
+            case KeyEvent.VK_T:
+                myTerrain.setIsDirectionalLight(darkMode);
+                darkMode = !darkMode;
                 break;
             case KeyEvent.VK_R:
                 raining = !raining;

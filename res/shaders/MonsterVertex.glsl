@@ -13,8 +13,8 @@ void main (void) {
     v = gl_ModelViewMatrix * vertexPos;
     N = vec3(normalize(gl_NormalMatrix * normalize(vertexNorm)));
 
-	gl_Position = gl_ModelViewProjectionMatrix * vertexPos;
-	texCoordV= vec2(vertexTex);
+    gl_Position = gl_ModelViewProjectionMatrix * vertexPos;
+    texCoordV= vec2(vertexTex);
 
 }
 

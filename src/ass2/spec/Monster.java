@@ -17,7 +17,6 @@ public class Monster {
     public static final String VERTEX_SHADER = Game.SHADERS_DIRECTORY + "MonsterVertex.glsl";
     public static final String FRAGMENT_SHADER = Game.SHADERS_DIRECTORY + "MonsterFragment.glsl";
 
-    // TODO
     public static final float POSITIONS[] = {
             // Front
             0, 0, 1,
@@ -112,7 +111,7 @@ public class Monster {
     private FloatBuffer normData;
     private FloatBuffer texData;
 
-    private int shader = 0;
+    private int shader;
 
     public Monster(double x, double y, double z) {
         myPos = new double[3];
@@ -134,7 +133,7 @@ public class Monster {
         // Set colours
         float matAmbAndDif[] = {1.0f, 1.0f, 1.0f, 1.0f};
         float matSpec[] = {1.0f, 1.0f, 1.0f, 1.0f};
-        float matShine[] = {50.0f};
+        float matShine[] = {10.0f};
         float emm[] = {0.0f, 0.0f, 0.0f, 1.0f};
         gl.glMaterialfv(GL2.GL_FRONT, GL2.GL_AMBIENT_AND_DIFFUSE, matAmbAndDif, 0);
         gl.glMaterialfv(GL2.GL_FRONT, GL2.GL_SPECULAR, matSpec, 0);
@@ -150,6 +149,10 @@ public class Monster {
         // Tell the shader our texUnit is the 0th one
         int texUnitLoc = gl.glGetUniformLocation(shader, "texUnit");
         gl.glUniform1i(texUnitLoc, 0);
+
+        // Set sun/torch
+        int isDirectionalLoc = gl.glGetUniformLocation(shader, "isDirectional");
+        gl.glUniform1i(isDirectionalLoc, terrain.isDirectionalLight() ? 1 : 0);
 
         // Bind the buffer we want to use
         gl.glBindBuffer(GL.GL_ARRAY_BUFFER, bufferIds[0]);
