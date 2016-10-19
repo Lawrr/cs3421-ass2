@@ -163,38 +163,59 @@ public class Terrain {
      * @return
      */
     public double altitude(double x, double z) {
-        // Interpolate x
         int x1 = (int) x;
         int x2 = (int) Math.ceil(x);
         int z1 = (int) z;
         int z2 = (int) Math.ceil(z);
 
+        // Terrain bounds
         if (!(x1 >= 0 && x2 < mySize.getWidth() &&
             z1 >= 0 && z2 < mySize.getHeight())) {
             return 0;
         }
+
+        /*
+         y1_____ y2
+           |   /|
+           | L/ |
+           | /R |
+           |/___|
+         y3      y4
+         */
+
+        // Offsets in the tile in range of 0 to 1
+        double xPercent = x % 1;
+        double zPercent = z % 1;
+
+        // The z value which correlates to the x on the mid-line
+        double zMidPercent = 1 - xPercent;
+
+        // y values
+        double y1 = myAltitude[x1][z1];
+        double y2 = myAltitude[x2][z1];
+        double y3 = myAltitude[x1][z2];
+        double y4 = myAltitude[x2][z2];
+
+        // The lerped y value which correlates to the mid-line point
+        double midY = MathUtil.lerp(y3, y2, xPercent);
+
+        // Lerped y values
+        double xY;
+        double zY = midY; // Set default as on the mid-line
+
         // Check which side of the triangle the point is on
+        if (zPercent < zMidPercent) {
+            // Left triangle
+            xY = MathUtil.lerp(y1, y2, xPercent);
+            zY = MathUtil.lerp(xY, midY, zPercent / zMidPercent);
 
-        double fx1 = myAltitude[x1][z2];
-        double fx2 = myAltitude[x2][z2];
-        double fz1 = myAltitude[x2][z1];
-        double fz2 = myAltitude[x2][z2];
+        } else if (zPercent > zMidPercent) {
+            // Right triangle
+            xY = MathUtil.lerp(y3, y4, xPercent);
+            zY = MathUtil.lerp(midY, xY, (zPercent - zMidPercent) / xPercent);
+        }
 
-//        System.out.printf("x1: %d, x2: %d, z1: %d, z2: %d\n", x1, x2, z1, z2);
-        if (x1 == x2 && z1 == z2) return fx1;
-        if (x1 == x2) return (z - z1) / (z2 - z1) * fz2 + (z2 - z) / (z2 - z1) * fz1;
-        if (z1 == z2) return (x - x1) / (x2 - x1) * fx2 + (x2 - x) / (x2 - x1) * fx1;
-
-        // Interpolate x
-        double dx = (x - x1) / (x2 - x1) * fx2 + (x2 - x) / (x2 - x1) * fx1;
-
-        // Interpolate z
-        double dz = (x - x1) / (x2 - x1) * fx2 + (x2 - x) / (x2 - x1) * fz2;
-
-        double dy = (z - z1) / (z2 - z1) * dz + (z2 - z) / (z2 - z1) * dx;
-//        System.out.printf("x %.2f y %.2fz %.2f, %.2f, %.2f\n", dx, dy, dz, (x - x1) / (x2 - x1) * fx2, fx2);
-
-        return dy;
+        return zY;
     }
 
     /**

@@ -49,4 +49,8 @@ public class MathUtil {
         modelview[9] = 0;
         modelview[10] = k;
     }
+
+    public static double lerp(double p, double q, double t) {
+        return p * (1 - t) + q * t;
+    }
 }

@@ -52,7 +52,7 @@ public class Game extends JFrame implements GLEventListener, KeyListener {
     public Game(Terrain terrain) {
         super("Assignment 2");
         myTerrain = terrain;
-        avatar = new Avatar();
+        avatar = new Avatar(myTerrain);
         rainSystem = new RainSystem(avatar);
     }
 

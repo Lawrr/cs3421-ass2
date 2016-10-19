@@ -11,7 +11,11 @@ public class Avatar {
     private double moveSpeed = 0.2;
     private double rotateSpeed = 5;
 
-    public Avatar() {
+    private Terrain terrain;
+
+    public Avatar(Terrain terrain) {
+        this.terrain = terrain;
+
         translation = new double[3];
         rotation = 45;
     }
