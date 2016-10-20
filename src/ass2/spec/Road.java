@@ -151,35 +151,76 @@ public class Road {
 
     public void draw(GL2 gl, Terrain terrain) {
         gl.glPolygonMode(GL2.GL_FRONT_AND_BACK, GL2.GL_LINE);
-        for (int i = 6; i < myPoints.size(); i += 6) {
-            gl.glBegin(GL2.GL_LINES);
-            {
-                double x0 = myPoints.get(i - 6);
-                double z0 = myPoints.get(i - 6 + 1);
-                double y0 = terrain.altitude(x0, z0);
-                double x1 = myPoints.get(i - 4);
-                double z1 = myPoints.get(i - 4 + 1);
-                double y1 = terrain.altitude(x1, z1);
-                double x2 = myPoints.get(i - 2);
-                double z2 = myPoints.get(i - 2 + 1);
-                double y2 = terrain.altitude(x2, z2);
-                double x3 = myPoints.get(i);
-                double z3 = myPoints.get(i + 1);
-                double y3 = terrain.altitude(x3, z3);
 
-                gl.glVertex3d(x0, y0, z0);
-                gl.glVertex3d(x1, y1, z1);
-                gl.glVertex3d(x1, y1, z1);
-                gl.glVertex3d(x2, y2, z2);
-                gl.glVertex3d(x2, y2, z2);
-                gl.glVertex3d(x3, y3, z3);
-                gl.glVertex3d(x0, y0, z0);
-                gl.glVertex3d(x3, y3, z3);
-            }
-            gl.glEnd();
+        double y0 = terrain.altitude(controlPoint(0)[0], controlPoint(0)[1]);
+        double tIncrement = 1.0/myPoints.size();
+
+        gl.glLineWidth(2);
+
+        gl.glBegin(GL2.GL_LINE_STRIP);
+
+        //Draw the road mesh
+        for (int i = 0; i < myPoints.size()*size()-2; i++) {
+            //Point increment depending on size()
+            double t = i * tIncrement;
+            double t2 = (i+1) *tIncrement;
+            double t3 = (i+2) *tIncrement;
+
+            double normal[] = normalisePoint(t, t2);
+            double normal2[] = normalisePoint(t2, t3);
+
+            double[] p1 = {point(t)[0] + (width()/2)* normal[0], y0, point(t)[1] + (width()/2)* normal[1]};
+            double[] p2 = {point(t)[0] - (width()/2)* normal[0], y0, point(t)[1] - (width()/2)* normal[1]};
+
+            double[] p3 = {point(t2)[0] - (width()/2)* normal2[0], y0, point(t2)[1] - (width()/2)* normal2[1]};
+            double[] p4 = {point(t2)[0] + (width()/2)* normal2[0], y0, point(t2)[1] + (width()/2)* normal2[1]};
+
+
+            /*
+              p4---p3
+              |   / |
+              |  /  |
+              | /   |
+              p1---p2
+
+             */
+
+            gl.glVertex3dv(p1, 0);
+            gl.glVertex3dv(p3, 0);
+            gl.glVertex3dv(p2, 0);
+            gl.glVertex3dv(p1, 0);
+            gl.glVertex3dv(p4, 0);
+            gl.glVertex3dv(p3, 0);
+            gl.glVertex3dv(p4, 0);
+
         }
+
+        gl.glEnd();
 
         //Set back to FILL when you are finished - not needed but is a bug fix for some implementations on some platforms
         gl.glPolygonMode(GL2.GL_FRONT_AND_BACK, GL2.GL_FILL);
+    }
+
+    double[] normalisePoint (double t, double nexT) {
+        //For point normal dx=x2-x1 and dy=y2-y1 (VECTOR STUFF)
+        //and then swap x and y and negate one(-dy, dx)
+
+        double vx = point(nexT)[0] - point(t)[0];
+        double vz = point(nexT)[1] - point(t)[1];
+
+        double nx1 = point(t)[0] - vz;
+        double nz1 = point(t)[1] + vx;
+
+        //Vector from point to point normal
+        double nVx = nx1 - point(t)[0];
+        double nVz = nz1 - point(t)[1];
+
+        //Normalise the vector
+        double normalVectorX = nVx/Math.sqrt(Math.pow(nVx,2) + Math.pow(nVz,2));
+        double normalVectorZ = nVz/Math.sqrt(Math.pow(nVx,2) + Math.pow(nVz,2));
+
+        double normalPoint[] = {normalVectorX, normalVectorZ};
+
+        return normalPoint;
     }
 }
