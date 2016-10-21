@@ -12,7 +12,7 @@ import java.nio.FloatBuffer;
  */
 public class Monster {
 
-    public static final String TEXTURE = Game.TEXTURES_DIRECTORY + "monster.png";
+    public static final String TEXTURE = Game.TEXTURES_DIRECTORY + "monster.jpg";
 
     public static final String VERTEX_SHADER = Game.SHADERS_DIRECTORY + "MonsterVertex.glsl";
     public static final String FRAGMENT_SHADER = Game.SHADERS_DIRECTORY + "MonsterFragment.glsl";
@@ -133,7 +133,7 @@ public class Monster {
         // Set colours
         float matAmbAndDif[] = {1.0f, 1.0f, 1.0f, 1.0f};
         float matSpec[] = {1.0f, 1.0f, 1.0f, 1.0f};
-        float matShine[] = {10.0f};
+        float matShine[] = {100.0f};
         float emm[] = {0.0f, 0.0f, 0.0f, 1.0f};
         gl.glMaterialfv(GL2.GL_FRONT, GL2.GL_AMBIENT_AND_DIFFUSE, matAmbAndDif, 0);
         gl.glMaterialfv(GL2.GL_FRONT, GL2.GL_SPECULAR, matSpec, 0);

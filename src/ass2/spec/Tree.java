@@ -10,9 +10,9 @@ import com.jogamp.opengl.GL2;
 public class Tree {
 
     // TODO find texture which is size of power of 2
-    public static final String TEXTURE_TRUNK = Game.TEXTURES_DIRECTORY + "tree_trunk.png";
+    public static final String TEXTURE_TRUNK = Game.TEXTURES_DIRECTORY + "tree_trunk.jpg";
 
-    public static final String TEXTURE_LEAVES = Game.TEXTURES_DIRECTORY + "tree_leaves.png";
+    public static final String TEXTURE_LEAVES = Game.TEXTURES_DIRECTORY + "tree_leaves.jpg";
 
     private double[] myPos;
     private MyTexture trunkTexture;
@@ -36,7 +36,6 @@ public class Tree {
         int slices = 32;
         double width = 0.3;
         double height = 2;
-//        System.out.println(terrain.altitude(2.5, 2.5));
         double z1 = 0;
         double z2 = height;
         gl.glPolygonMode(GL2.GL_FRONT_AND_BACK, GL2.GL_FILL);
@@ -45,8 +44,8 @@ public class Tree {
         gl.glBindTexture(GL2.GL_TEXTURE_2D, trunkTexture.getTextureId());
 
         float matAmbAndDif[] = {1.0f, 1.0f, 1.0f, 1.0f};
-        float matSpec[] = {1.0f, 1.0f, 1.0f, 1.0f};
-        float matShine[] = {50.0f};
+        float matSpec[] = {0.0f, 0.0f, 0.0f, 1.0f};
+        float matShine[] = {0.0f};
         float emm[] = {0.0f, 0.0f, 0.0f, 1.0f};
         gl.glMaterialfv(GL2.GL_FRONT, GL2.GL_AMBIENT_AND_DIFFUSE, matAmbAndDif, 0);
         gl.glMaterialfv(GL2.GL_FRONT, GL2.GL_SPECULAR, matSpec, 0);
@@ -118,10 +117,9 @@ public class Tree {
         double leavesRadius = width * 4;
         gl.glTranslated(0, z2 + leavesRadius -  leavesRadius * 0.25, 0);
 
-//        matAmbAndDif = new float[]{0.0f, 0.5f, 0.1f, 1.0f};
         matAmbAndDif = new float[]{1.0f, 1.0f, 1.0f, 1.0f};
-        matSpec = new float[]{1.0f, 1.0f, 1.0f, 1.0f};
-        matShine = new float[]{50.0f};
+        matSpec = new float[]{0.0f, 0.0f, 0.0f, 0.0f};
+        matShine = new float[]{0.0f};
         emm = new float[]{0.0f, 0.0f, 0.0f, 1.0f};
         gl.glMaterialfv(GL2.GL_FRONT, GL2.GL_AMBIENT_AND_DIFFUSE, matAmbAndDif, 0);
         gl.glMaterialfv(GL2.GL_FRONT, GL2.GL_SPECULAR, matSpec, 0);

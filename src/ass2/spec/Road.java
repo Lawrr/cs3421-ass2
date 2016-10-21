@@ -11,7 +11,7 @@ import java.util.List;
  * @author malcolmr
  */
 public class Road {
-    public static final String TEXTURE_ROAD = Game.TEXTURES_DIRECTORY + "road.png";
+    public static final String TEXTURE_ROAD = Game.TEXTURES_DIRECTORY + "road.jpg";
 
     private List<Double> myPoints;
     private double myWidth;
@@ -160,8 +160,8 @@ public class Road {
         double tIncrement = 1.0/myPoints.size();
 
         float matAmbAndDif[] = {1.0f, 1.0f, 1.0f, 1.0f};
-        float matSpec[] = {1.0f, 1.0f, 1.0f, 1.0f};
-        float matShine[] = {50.0f};
+        float matSpec[] = {0.3f, 0.3f, 0.3f, 1.0f};
+        float matShine[] = {10.0f};
         float emm[] = {0.0f, 0.0f, 0.0f, 1.0f};
         gl.glMaterialfv(GL2.GL_FRONT, GL2.GL_AMBIENT_AND_DIFFUSE, matAmbAndDif, 0);
         gl.glMaterialfv(GL2.GL_FRONT, GL2.GL_SPECULAR, matSpec, 0);

@@ -28,13 +28,10 @@ public class Avatar {
         gl.glRotated(-rotation, 0, 1, 0);
         gl.glEnable(GL_COLOR_MATERIAL);
 
-        //Draw Teapot
         float matAmbAndDif[] = {1.0f, 0.0f, 0.0f, 1.0f};
         float matSpec[] = {1.0f, 1.0f, 1.0f, 1.0f};
         float matShine[] = {50.0f};
         float emm[] = {0.0f, 0.0f, 0.0f, 1.0f};
-
-        // Material properties of teapot
         gl.glMaterialfv(GL2.GL_FRONT, GL2.GL_AMBIENT_AND_DIFFUSE, matAmbAndDif, 0);
         gl.glMaterialfv(GL2.GL_FRONT, GL2.GL_SPECULAR, matSpec, 0);
         gl.glMaterialfv(GL2.GL_FRONT, GL2.GL_SHININESS, matShine, 0);
@@ -42,14 +39,13 @@ public class Avatar {
 
         // Draw Scene
         GLUT glut = new GLUT();
-        gl.glFrontFace(GL2.GL_CW);
 
         //For altitude fix
         gl.glTranslated(0,-0.05,0);
 
         //Main body (white)
         gl.glColor3f(2.0f, 2.0f, 2.0f);
-        gl.glTranslated(0,0.5,0);
+        gl.glTranslated(-0.5,0.5,0);
         gl.glScaled(1.2,0.5,0.8);
         glut.glutSolidSphere(0.25,8,8);
 
@@ -88,7 +84,6 @@ public class Avatar {
 /*        gl.glTranslated(-0.4,0.12,0);
         glut.glutSolidSphere(0.05,8,8);*/
 
-        gl.glFrontFace(GL2.GL_CCW);
         gl.glDisable(GL_COLOR_MATERIAL);
 
         gl.glPopMatrix();

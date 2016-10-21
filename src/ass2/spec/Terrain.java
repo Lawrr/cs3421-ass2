@@ -16,7 +16,7 @@ import java.util.List;
  */
 public class Terrain {
 
-    public static final String TEXTURE = Game.TEXTURES_DIRECTORY + "terrain.png";
+    public static final String TEXTURE = Game.TEXTURES_DIRECTORY + "terrain.jpg";
 
     private Dimension mySize;
     private double[][] myAltitude;
@@ -265,8 +265,8 @@ public class Terrain {
         gl.glPolygonMode(GL2.GL_FRONT_AND_BACK, GL2.GL_FILL);
 
         float matAmbAndDif[] = {1.0f, 1.0f, 1.0f, 1.0f};
-        float matSpec[] = {1.0f, 1.0f, 1.0f, 1.0f};
-        float matShine[] = {50.0f};
+        float matSpec[] = {0.0f, 0.0f, 0.0f, 1.0f};
+        float matShine[] = {0.0f};
         float emm[] = {0.0f, 0.0f, 0.0f, 1.0f};
         gl.glMaterialfv(GL2.GL_FRONT, GL2.GL_AMBIENT_AND_DIFFUSE, matAmbAndDif, 0);
         gl.glMaterialfv(GL2.GL_FRONT, GL2.GL_SPECULAR, matSpec, 0);
