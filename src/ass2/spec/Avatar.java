@@ -48,13 +48,13 @@ public class Avatar {
         gl.glTranslated(0,-0.05,0);
 
         //Main body (white)
-        gl.glColor3d(255,255,255);
+        gl.glColor3f(2.0f, 2.0f, 2.0f);
         gl.glTranslated(0,0.5,0);
         gl.glScaled(1.2,0.5,0.8);
         glut.glutSolidSphere(0.25,8,8);
 
         //Front body (black)
-        gl.glColor3d(0,0,0);
+        gl.glColor3f(0f, 0f, 0f);
         gl.glTranslated(0.2,-0.05,0);
         glut.glutSolidSphere(0.25,5,5);
 
@@ -69,14 +69,14 @@ public class Avatar {
         glut.glutSolidCylinder(0.1,0.3,8,8);
 
         //Head (white)
-        gl.glColor3d(255,255,255);
+        gl.glColor3f(2.0f, 2.0f, 2.0f);
         gl.glTranslated(0.72,0.1,0.1);
         gl.glRotated(-90,1,0,0);
         gl.glScaled(1.1,0.7,0.7);
         glut.glutSolidSphere(0.25,12,12);
 
         //EarR
-        gl.glColor3d(0,0,0);
+        gl.glColor3f(0f, 0f, 0f);
         gl.glTranslated(0.1,0.2,0.15);
         gl.glScaled(0.3,0.3,0.3);
         glut.glutSolidSphere(0.25,10,10);
