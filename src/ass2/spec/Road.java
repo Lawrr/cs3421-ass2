@@ -183,15 +183,9 @@ public class Road {
 
             double[] p1 = {point(t)[0] + (width()/2)* normal[0], y, point(t)[1] + (width()/2)* normal[1]};
             double[] p2 = {point(t)[0] - (width()/2)* normal[0], y, point(t)[1] - (width()/2)* normal[1]};
-
             double[] p3 = {point(t2)[0] - (width()/2)* normal2[0], y, point(t2)[1] - (width()/2)* normal2[1]};
             double[] p4 = {point(t2)[0] + (width()/2)* normal2[0], y, point(t2)[1] + (width()/2)* normal2[1]};
 
-            double[] rTriangle = {p2[0], p2[1], p2[2], p3[0], p3[1], p3[2], p1[0], p1[1], p1[2]};
-            double[] lTriangle = {p1[0], p1[1], p1[2], p3[0], p3[1], p3[2], p4[0], p4[1], p4[2]};
-
-            double[] rNormal = MathUtil.calcSurfaceNormal(rTriangle);
-            double[] lNormal = MathUtil.calcSurfaceNormal(lTriangle);
 
             gl.glBegin(GL2.GL_TRIANGLES);
 
@@ -204,7 +198,7 @@ public class Road {
 
              */
 
-            gl.glNormal3dv(rNormal,0);
+            gl.glNormal3d(0,1,0);
 
             gl.glTexCoord2d(0, 0);
             gl.glVertex3dv(p1, 0);
@@ -217,8 +211,6 @@ public class Road {
 
             gl.glTexCoord2d(0, 0);
             gl.glVertex3dv(p1, 0);
-
-            gl.glNormal3dv(lNormal,0);
 
             gl.glTexCoord2d(0, 1);
             gl.glVertex3dv(p4, 0);

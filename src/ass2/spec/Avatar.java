@@ -44,10 +44,11 @@ public class Avatar {
         GLUT glut = new GLUT();
         gl.glFrontFace(GL2.GL_CW);
 
-        gl.glTranslated(0,0.05,0);
+        //For altitude fix
+        gl.glTranslated(0,-0.05,0);
 
         //Main body (white)
-        gl.glColor3d(245,245,245);
+        gl.glColor3d(255,255,255);
         gl.glTranslated(0,0.5,0);
         gl.glScaled(1.2,0.5,0.8);
         glut.glutSolidSphere(0.25,8,8);
@@ -68,11 +69,11 @@ public class Avatar {
         glut.glutSolidCylinder(0.1,0.3,8,8);
 
         //Head (white)
-        gl.glColor3d(245,245,245);
+        gl.glColor3d(255,255,255);
         gl.glTranslated(0.72,0.1,0.1);
         gl.glRotated(-90,1,0,0);
         gl.glScaled(1.1,0.7,0.7);
-        glut.glutSolidSphere(0.25,10,10);
+        glut.glutSolidSphere(0.25,12,12);
 
         //EarR
         gl.glColor3d(0,0,0);
