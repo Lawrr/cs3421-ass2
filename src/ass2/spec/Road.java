@@ -11,9 +11,12 @@ import java.util.List;
  * @author malcolmr
  */
 public class Road {
+    public static final String TEXTURE_ROAD = Game.TEXTURES_DIRECTORY + "monster.png";
 
     private List<Double> myPoints;
     private double myWidth;
+
+    private MyTexture roadTexture;
     
     /** 
      * Create a new road starting at the specified point
@@ -150,14 +153,23 @@ public class Road {
 
 
     public void draw(GL2 gl, Terrain terrain) {
-        gl.glPolygonMode(GL2.GL_FRONT_AND_BACK, GL2.GL_LINE);
+        gl.glPolygonMode(GL2.GL_FRONT_AND_BACK, GL2.GL_FILL);
 
-        double y0 = terrain.altitude(controlPoint(0)[0], controlPoint(0)[1]);
+        //Altitude added 0.001 so it doesn't overlap with terrain
+        double y = terrain.altitude(controlPoint(0)[0], controlPoint(0)[1])+0.001;
         double tIncrement = 1.0/myPoints.size();
 
-        gl.glLineWidth(2);
+        float matAmbAndDif[] = {1.0f, 1.0f, 1.0f, 1.0f};
+        float matSpec[] = {1.0f, 1.0f, 1.0f, 1.0f};
+        float matShine[] = {50.0f};
+        float emm[] = {0.0f, 0.0f, 0.0f, 1.0f};
+        gl.glMaterialfv(GL2.GL_FRONT, GL2.GL_AMBIENT_AND_DIFFUSE, matAmbAndDif, 0);
+        gl.glMaterialfv(GL2.GL_FRONT, GL2.GL_SPECULAR, matSpec, 0);
+        gl.glMaterialfv(GL2.GL_FRONT, GL2.GL_SHININESS, matShine, 0);
+        gl.glMaterialfv(GL2.GL_FRONT, GL2.GL_EMISSION, emm, 0);
 
-        gl.glBegin(GL2.GL_LINE_STRIP);
+        //Set texture for road
+        gl.glBindTexture(GL2.GL_TEXTURE_2D, roadTexture.getTextureId());
 
         //Draw the road mesh
         for (int i = 0; i < myPoints.size()*size()-2; i++) {
@@ -166,15 +178,22 @@ public class Road {
             double t2 = (i+1) *tIncrement;
             double t3 = (i+2) *tIncrement;
 
-            double normal[] = normalisePoint(t, t2);
-            double normal2[] = normalisePoint(t2, t3);
+            double[] normal = normalisePoint(t, t2);
+            double[] normal2 = normalisePoint(t2, t3);
 
-            double[] p1 = {point(t)[0] + (width()/2)* normal[0], y0, point(t)[1] + (width()/2)* normal[1]};
-            double[] p2 = {point(t)[0] - (width()/2)* normal[0], y0, point(t)[1] - (width()/2)* normal[1]};
+            double[] p1 = {point(t)[0] + (width()/2)* normal[0], y, point(t)[1] + (width()/2)* normal[1]};
+            double[] p2 = {point(t)[0] - (width()/2)* normal[0], y, point(t)[1] - (width()/2)* normal[1]};
 
-            double[] p3 = {point(t2)[0] - (width()/2)* normal2[0], y0, point(t2)[1] - (width()/2)* normal2[1]};
-            double[] p4 = {point(t2)[0] + (width()/2)* normal2[0], y0, point(t2)[1] + (width()/2)* normal2[1]};
+            double[] p3 = {point(t2)[0] - (width()/2)* normal2[0], y, point(t2)[1] - (width()/2)* normal2[1]};
+            double[] p4 = {point(t2)[0] + (width()/2)* normal2[0], y, point(t2)[1] + (width()/2)* normal2[1]};
 
+            double[] rTriangle = {p2[0], p2[1], p2[2], p3[0], p3[1], p3[2], p1[0], p1[1], p1[2]};
+            double[] lTriangle = {p1[0], p1[1], p1[2], p3[0], p3[1], p3[2], p4[0], p4[1], p4[2]};
+
+            double[] rNormal = MathUtil.calcSurfaceNormal(rTriangle);
+            double[] lNormal = MathUtil.calcSurfaceNormal(lTriangle);
+
+            gl.glBegin(GL2.GL_TRIANGLES);
 
             /*
               p4---p3
@@ -185,17 +204,35 @@ public class Road {
 
              */
 
+            gl.glNormal3dv(rNormal,0);
+
+            gl.glTexCoord2d(0, 0);
             gl.glVertex3dv(p1, 0);
+
+            gl.glTexCoord2d(1, 1);
             gl.glVertex3dv(p3, 0);
+
+            gl.glTexCoord2d(1, 0);
             gl.glVertex3dv(p2, 0);
+
+            gl.glTexCoord2d(0, 0);
             gl.glVertex3dv(p1, 0);
-            gl.glVertex3dv(p4, 0);
-            gl.glVertex3dv(p3, 0);
+
+            gl.glNormal3dv(lNormal,0);
+
+            gl.glTexCoord2d(0, 1);
             gl.glVertex3dv(p4, 0);
 
+            gl.glTexCoord2d(1, 1);
+            gl.glVertex3dv(p3, 0);
+
+            gl.glTexCoord2d(0, 1);
+            gl.glVertex3dv(p4, 0);
+
+            gl.glEnd();
         }
 
-        gl.glEnd();
+        gl.glBindTexture(GL2.GL_TEXTURE_2D, 0);
 
         //Set back to FILL when you are finished - not needed but is a bug fix for some implementations on some platforms
         gl.glPolygonMode(GL2.GL_FRONT_AND_BACK, GL2.GL_FILL);
@@ -222,5 +259,9 @@ public class Road {
         double normalPoint[] = {normalVectorX, normalVectorZ};
 
         return normalPoint;
+    }
+
+    public void setRoadTexture(MyTexture texture) {
+        this.roadTexture = texture;
     }
 }

@@ -177,6 +177,9 @@ public class Game extends JFrame implements GLEventListener, KeyListener {
         MyTexture terrainTexture = new MyTexture(gl, Terrain.TEXTURE, true);
         myTerrain.setTerrainTexture(terrainTexture);
 
+        MyTexture roadTexture = new MyTexture(gl, Road.TEXTURE_ROAD, true);
+        myTerrain.setRoadTexture(roadTexture);
+
         MyTexture treeTrunkTexture = new MyTexture(gl, Tree.TEXTURE_TRUNK, true);
         myTerrain.setTreeTrunkTexture(treeTrunkTexture);
 

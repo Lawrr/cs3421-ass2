@@ -69,6 +69,12 @@ public class Terrain {
         this.texture = texture;
     }
 
+    public void setRoadTexture(MyTexture texture) {
+        for (Road r : myRoads) {
+            r.setRoadTexture(texture);
+        }
+    }
+
     public void setTreeTrunkTexture(MyTexture texture) {
         for (Tree t : myTrees) {
             t.setTrunkTexture(texture);
@@ -280,8 +286,8 @@ public class Terrain {
                                             x + 1, myAltitude[x + 1][z], z,                 //top right
                                             x, myAltitude[x][z], z};                        //top left
 
-                double[] rNormal = calcSurfaceNormal(rTrianglePoints);
-                double[] lNormal = calcSurfaceNormal(lTrianglePoints);
+                double[] rNormal = MathUtil.calcSurfaceNormal(rTrianglePoints);
+                double[] lNormal = MathUtil.calcSurfaceNormal(lTrianglePoints);
 
                 gl.glBegin(GL2.GL_TRIANGLES);
                 {
@@ -293,8 +299,9 @@ public class Terrain {
                        |/___|
                      */
 
-                    gl.glNormal3dv(rNormal, 0);
                     // Right triangle
+                    gl.glNormal3dv(rNormal, 0);
+
                     // Bottom right
                     gl.glTexCoord2d(1, 0);
                     gl.glVertex3d(x + 1, myAltitude[x + 1][z + 1], z + 1);
@@ -305,8 +312,9 @@ public class Terrain {
                     gl.glTexCoord2d(0, 0);
                     gl.glVertex3d(x, myAltitude[x][z + 1], z + 1);
 
-                    gl.glNormal3dv(lNormal, 0);
                     // Left triangle
+                    gl.glNormal3dv(lNormal, 0);
+
                     // Bottom left
                     gl.glTexCoord2d(0, 0);
                     gl.glVertex3d(x, myAltitude[x][z + 1], z + 1);
@@ -322,30 +330,6 @@ public class Terrain {
         }
 
         gl.glBindTexture(GL2.GL_TEXTURE_2D, 0);
-    }
-
-    public double[] calcSurfaceNormal(double[] triangle) {
-        //points are x,y,z
-        //p1 = triangle[0,1,2]
-        //p2 = triangle[3,4,5]
-        //p3 = triangle[6,7,8]
-        //vectorA = p2-p1
-        double[] normal = new double[3];
-        double[] vectorA = new double[3];
-        vectorA[0] = triangle[3]-triangle[0];
-        vectorA[1] = triangle[4]-triangle[1];
-        vectorA[2] = triangle[5]-triangle[2];
-
-        //vectorB = p3-p1
-        double[] vectorB = new double[3];
-        vectorB[0] = triangle[6]-triangle[0];
-        vectorB[1] = triangle[7]-triangle[1];
-        vectorB[2] = triangle[8]-triangle[2];
-
-        // normal is cross product of vectorA and B
-        MathUtil.normCrossProd(vectorA, vectorB, normal);
-
-        return normal;
     }
 
     public void draw(GL2 gl) {
