@@ -11,7 +11,7 @@ import java.util.List;
  * @author malcolmr
  */
 public class Road {
-    public static final String TEXTURE_ROAD = Game.TEXTURES_DIRECTORY + "monster.png";
+    public static final String TEXTURE_ROAD = Game.TEXTURES_DIRECTORY + "road.png";
 
     private List<Double> myPoints;
     private double myWidth;
