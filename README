@@ -1,0 +1,15 @@
+Extensions:
+
+    - Complex model / model with walking animation
+        - Avatar.java
+
+    - Night mode with torch
+        - Game.java
+            - SetLighting function to update lighting settings between sunlight and torch
+            - display function to change background colour depending on the mode
+
+    - Rain (snow) using particle effects
+        - RainSystem.java
+            - Instance is initialised in Game.java and is drawn when rain is toggled on
+        - MathUtil.java
+            - Contains the billboard function used in RainSystem
