@@ -19,8 +19,12 @@ public class Avatar {
 
     public Avatar(Terrain terrain) {
         this.terrain = terrain;
-        translation = new double[3];
+
         rotation = 45;
+
+        translation = new double[3];
+        // Set avatar altitude
+        translation[1] = terrain.altitude(translation[0], translation[2]);
     }
 
     public void draw(GL2 gl) {
@@ -138,6 +142,9 @@ public class Avatar {
         double moveX = Math.cos(a0) * distance;
         double moveZ = Math.sin(a0) * distance;
         translate(moveX, 0, moveZ);
+
+        // Update avatar altitude
+        translation[1] = terrain.altitude(translation[0], translation[2]);
 
         //Animation stuff
         //Rotation animation limit
