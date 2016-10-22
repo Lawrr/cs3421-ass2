@@ -79,4 +79,27 @@ public class MathUtil {
 
         return normal;
     }
+
+    public static double[] normalisePoint (double x1, double z1, double x2, double z2) {
+        //For point normal dx=x2-x1 and dy=y2-y1 (VECTOR STUFF)
+        //and then swap x and y and negate one(-dy, dx)
+        //Used to find distance of a point in between 2 points
+
+        double vx = x2 - x1;
+        double vz = z2 - z1;
+
+        double nx1 = x1 - vz;
+        double nz1 = z1 + vx;
+
+        //Vector from point to point normal
+        double nVx = nx1 - x1;
+        double nVz = nz1 - z1;
+
+        //Normalise the vector
+        double normalVectorX = nVx/Math.sqrt(Math.pow(nVx,2) + Math.pow(nVz,2));
+        double normalVectorZ = nVz/Math.sqrt(Math.pow(nVx,2) + Math.pow(nVz,2));
+
+        return new double[]{normalVectorX, normalVectorZ};
+    }
+
 }

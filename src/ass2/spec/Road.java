@@ -182,7 +182,7 @@ public class Road {
             double vx = point(t2)[0] - point(t)[0];
             double vz = point(t2)[1] - point(t)[1];
 
-            double[] normal = normalisePoint(point(t)[0], point(t)[1], point(t2)[0], point(t2)[1]);
+            double[] normal = MathUtil.normalisePoint(point(t)[0], point(t)[1], point(t2)[0], point(t2)[1]);
 
             double[] p1 = {point(t)[0] + (width()/2)* normal[0], y, point(t)[1] + (width()/2)* normal[1]};
             double[] p2 = {point(t)[0] - (width()/2)* normal[0], y, point(t)[1] - (width()/2)* normal[1]};
@@ -197,7 +197,7 @@ public class Road {
             if (i != myPoints.size()*size()-2) {
                 double t3 = (i + 2) * tIncrement;
 
-                double[] normal2 = normalisePoint(point(t2)[0], point(t2)[1], point(t3)[0], point(t3)[1]);
+                double[] normal2 = MathUtil.normalisePoint(point(t2)[0], point(t2)[1], point(t3)[0], point(t3)[1]);
 
                 p3[0] = point(t2)[0] - (width()/2)* normal2[0];
                 p3[1] = y;
@@ -264,7 +264,7 @@ public class Road {
 
         double t = p * tIncrement;
 
-        double[] normal = normalisePoint(point(t)[0], point(t)[1], controlPoint(size()*3)[0], controlPoint(size()*3)[1]);
+        double[] normal = MathUtil.normalisePoint(point(t)[0], point(t)[1], controlPoint(size()*3)[0], controlPoint(size()*3)[1]);
 
         double vx = controlPoint(size()*3)[0] - point(t)[0];
         double vz = controlPoint(size()*3)[1] - point(t)[1];
@@ -304,28 +304,6 @@ public class Road {
 
         //Set back to FILL when you are finished - not needed but is a bug fix for some implementations on some platforms
         gl.glPolygonMode(GL2.GL_FRONT_AND_BACK, GL2.GL_FILL);
-    }
-
-    double[] normalisePoint (double x1, double z1, double x2, double z2) {
-        //For point normal dx=x2-x1 and dy=y2-y1 (VECTOR STUFF)
-        //and then swap x and y and negate one(-dy, dx)
-        //Used to find distance of a point in between 2 points
-
-        double vx = x2 - x1;
-        double vz = z2 - z1;
-
-        double nx1 = x1 - vz;
-        double nz1 = z1 + vx;
-
-        //Vector from point to point normal
-        double nVx = nx1 - x1;
-        double nVz = nz1 - z1;
-
-        //Normalise the vector
-        double normalVectorX = nVx/Math.sqrt(Math.pow(nVx,2) + Math.pow(nVz,2));
-        double normalVectorZ = nVz/Math.sqrt(Math.pow(nVx,2) + Math.pow(nVz,2));
-
-        return new double[]{normalVectorX, normalVectorZ};
     }
 
     public void setRoadTexture(MyTexture texture) {
