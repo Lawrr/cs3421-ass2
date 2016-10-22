@@ -9,9 +9,7 @@ import com.jogamp.opengl.GL2;
  */
 public class Tree {
 
-    // TODO find texture which is size of power of 2
     public static final String TEXTURE_TRUNK = Game.TEXTURES_DIRECTORY + "tree_trunk.jpg";
-
     public static final String TEXTURE_LEAVES = Game.TEXTURES_DIRECTORY + "tree_leaves.jpg";
 
     private double[] myPos;
@@ -33,11 +31,13 @@ public class Tree {
     public void draw(GL2 gl, Terrain terrain) {
         gl.glPushMatrix();
         gl.glTranslated(myPos[0], myPos[1], myPos[2]);
+
         int slices = 32;
         double width = 0.3;
         double height = 2;
         double z1 = 0;
         double z2 = height;
+
         gl.glPolygonMode(GL2.GL_FRONT_AND_BACK, GL2.GL_FILL);
 
         // Set texture for tree trunk
@@ -53,12 +53,13 @@ public class Tree {
         gl.glMaterialfv(GL2.GL_FRONT, GL2.GL_EMISSION, emm, 0);
 
         // Top
-        gl.glBegin(GL2.GL_TRIANGLE_FAN);{
+        gl.glBegin(GL2.GL_TRIANGLE_FAN);
+        {
             gl.glNormal3d(0,1,0);
             gl.glTexCoord2d(width, width);
             gl.glVertex3d(0,z1,0);
-            double angleStep = 2*Math.PI/slices;
-            for (int i = 0; i <= slices ; i++){
+            double angleStep = 2 * Math.PI / slices;
+            for (int i = 0; i <= slices ; i++) {
                 double a0 = i * angleStep;
                 double x0 = Math.cos(a0) * width;
                 double y0 = Math.sin(a0) * width;
@@ -66,23 +67,26 @@ public class Tree {
                 gl.glTexCoord2d(width + x0, width + y0);
                 gl.glVertex3d(x0,z1,y0);
             }
-        }gl.glEnd();
+        }
+        gl.glEnd();
 
         // Bottom
-        gl.glBegin(GL2.GL_TRIANGLE_FAN);{
-            gl.glNormal3d(0,-1,0);
+        gl.glBegin(GL2.GL_TRIANGLE_FAN);
+        {
+            gl.glNormal3d(0, -1, 0);
             gl.glTexCoord2d(width, width);
-            gl.glVertex3d(0,z2,0);
-            double angleStep = 2*Math.PI/slices;
-            for (int i = 0; i <= slices ; i++){
-                double a0 = 2*Math.PI - i * angleStep;
+            gl.glVertex3d(0, z2, 0);
+            double angleStep = 2 * Math.PI / slices;
+            for (int i = 0; i <= slices; i++) {
+                double a0 = 2 * Math.PI - i * angleStep;
                 double x0 = Math.cos(a0) * width;
                 double y0 = Math.sin(a0) * width;
 
                 gl.glTexCoord2d(width + x0, width + y0);
-                gl.glVertex3d(x0,z2,y0);
+                gl.glVertex3d(x0, z2, y0);
             }
-        }gl.glEnd();
+        }
+        gl.glEnd();
 
         // Sides
         gl.glBegin(GL2.GL_QUAD_STRIP);
@@ -129,16 +133,16 @@ public class Tree {
         int numStacks = 32;
         int numSlices = 20;
 
-        double deltaT = 0.5/numStacks;
+        double deltaT = 0.5 / numStacks;
         int ang;
-        int delang = 360/numSlices;
+        int delang = 360 / numSlices;
         double x1,x2,y1,y2;
         for (int i = 0; i < numStacks; i++) {
             double t = -0.25 + i*deltaT;
 
             gl.glBegin(GL2.GL_TRIANGLE_STRIP);
             for(int j = 0; j <= numSlices; j++) {
-                ang = j*delang;
+                ang = j * delang;
                 x1=leavesRadius * r(t)*Math.cos((double)ang*2.0*Math.PI/360.0);
                 x2=leavesRadius * r(t+deltaT)*Math.cos((double)ang*2.0*Math.PI/360.0);
                 y1 = leavesRadius * getY(t);
@@ -149,11 +153,10 @@ public class Tree {
 
                 double normal[] = {x1,y1,z1};
 
-
                 MathUtil.normalize(normal);
 
                 gl.glNormal3dv(normal,0);
-                double tCoord = 2.0/numStacks * i; //Or * 2 to repeat label
+                double tCoord = 2.0/numStacks * i; // * 2 to repeat texture
                 double sCoord = 2.0/numSlices * j;
                 gl.glTexCoord2d(sCoord,tCoord);
                 gl.glVertex3d(x1,y1,z1);
@@ -161,11 +164,10 @@ public class Tree {
                 normal[1] = y2;
                 normal[2] = z2;
 
-
                 MathUtil.normalize(normal);
 
                 gl.glNormal3dv(normal,0);
-                tCoord = 2.0/numStacks * (i+1); //Or * 2 to repeat label
+                tCoord = 2.0/numStacks * (i+1); // * 2 to repeat texture
                 gl.glTexCoord2d(sCoord,tCoord);
                 gl.glVertex3d(x2,y2,z2);
 

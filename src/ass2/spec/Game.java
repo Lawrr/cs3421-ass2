@@ -29,7 +29,7 @@ public class Game extends JFrame implements GLEventListener, KeyListener {
     private Avatar avatar;
     private RainSystem rainSystem;
 
-    // Setting for sun
+    // Setting for sunlight
     private static final float aSun = 0.1f; // Ambient white light intensity.
     private static final float dSun = 0.5f; // Diffuse white light intensity
     private static final float sSun = 0.2f; // Specular white light intensity.
@@ -40,16 +40,17 @@ public class Game extends JFrame implements GLEventListener, KeyListener {
     private static final float dTorch = 0.8f; // Diffuse white light intensity
     private static final float sTorch = 0.2f; // Specular white light intensity.
     private static final float gTorch = 0.1f; // Global Ambient intensity.
-    private static final float torchAngle = 45;
+    private static final float torchAngle = 45; // Half angle
     private static final float torchExponent = 4;
 
-    //Global Settings
+    // Global Settings
     private boolean thirdPerson = true;
     private boolean raining = false;
     private boolean darkMode = false;
 
     public Game(Terrain terrain) {
         super("Assignment 2");
+
         myTerrain = terrain;
         avatar = new Avatar(myTerrain);
         rainSystem = new RainSystem(avatar);
@@ -93,11 +94,13 @@ public class Game extends JFrame implements GLEventListener, KeyListener {
     public void display(GLAutoDrawable drawable) {
         GL2 gl = drawable.getGL().getGL2();
 
+        // Background colour
         if (!darkMode) {
             gl.glClearColor(0.7f, 0.9f, 1, 1);
         } else {
             gl.glClearColor(0.05f, 0.05f, 0.05f, 1);
         }
+
         gl.glClear(GL2.GL_COLOR_BUFFER_BIT | GL2.GL_DEPTH_BUFFER_BIT);
 
         gl.glMatrixMode(GL2.GL_MODELVIEW);
@@ -105,9 +108,7 @@ public class Game extends JFrame implements GLEventListener, KeyListener {
 
         GLU glu = new GLU();
 
-        // Camera
         double[] pos = avatar.getPos();
-        pos[1] = myTerrain.altitude(pos[0], pos[2]);
 
         double a0 = Math.toRadians(avatar.getRotation());
         double towardsX = Math.cos(a0);
@@ -119,13 +120,13 @@ public class Game extends JFrame implements GLEventListener, KeyListener {
         double centerY = eyeY;
         double centerZ = eyeZ + towardsZ;
 
+        // Set camera position
         if (thirdPerson) {
             glu.gluLookAt(eyeX - towardsX * 3, eyeY + 1, eyeZ - towardsZ * 3, centerX, centerY, centerZ, 0.0, 1.0, 0.0);
         } else {
             glu.gluLookAt(eyeX - towardsX, eyeY + 0.1, eyeZ - towardsZ, centerX, centerY, centerZ, 0.0, 1.0, 0.0);
         }
 
-        // Directional light
         setLighting(gl);
 
         if (thirdPerson) avatar.draw(gl);
@@ -138,7 +139,6 @@ public class Game extends JFrame implements GLEventListener, KeyListener {
     @Override
     public void dispose(GLAutoDrawable drawable) {
         // TODO Auto-generated method stub
-
     }
 
     @Override
@@ -146,7 +146,7 @@ public class Game extends JFrame implements GLEventListener, KeyListener {
         GL2 gl = drawable.getGL().getGL2();
 
         gl.glEnable(GL2.GL_DEPTH_TEST);
-        // Cull back faces.
+        // Cull back faces
         gl.glEnable(GL2.GL_CULL_FACE);
         gl.glCullFace(GL2.GL_BACK);
         // Turn on OpenGL texturing
@@ -258,7 +258,7 @@ public class Game extends JFrame implements GLEventListener, KeyListener {
         float pos[];
 
         if (!darkMode) {
-            // Sun
+            // Sunlight
             amb = new float[]{ aSun, aSun, aSun, 1 };
             dif = new float[]{ dSun, dSun, dSun, 1 };
             spec = new float[]{ sSun, sSun, sSun, 1 };
@@ -267,7 +267,7 @@ public class Game extends JFrame implements GLEventListener, KeyListener {
 
             gl.glLightf(GL2.GL_LIGHT0, GL2.GL_SPOT_CUTOFF, 180);
         } else {
-            // Torch
+            // Dark mode: torch
             amb = new float[]{ aTorch, aTorch, aTorch, 1 };
             dif = new float[]{ dTorch, dTorch, dTorch, 1 };
             spec = new float[]{ sTorch, sTorch, sTorch, 1 };
