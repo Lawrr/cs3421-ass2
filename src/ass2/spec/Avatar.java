@@ -12,8 +12,8 @@ public class Avatar {
 
     private double moveSpeed = 0.2;
     private double rotateSpeed = 5;
-    private int animCounter = 0;
     private double velocity = 0;
+    private int rotationLimit = 0;
     private boolean up = true;
 
     private Terrain terrain;
@@ -68,7 +68,7 @@ public class Avatar {
 
         //LegR animation
         gl.glPushMatrix();
-        gl.glRotated(animCounter,0,1,0);
+        gl.glRotated(rotationLimit*4,0,1,0);
         glut.glutSolidCylinder(0.1,0.3,8,8);
         gl.glPopMatrix();
 
@@ -78,13 +78,13 @@ public class Avatar {
 
         //LegL animation
         gl.glPushMatrix();
-        gl.glRotated(-animCounter,0,1,0);
+        gl.glRotated(-rotationLimit*4,0,1,0);
         glut.glutSolidCylinder(0.1,0.3,8,8);
         gl.glPopMatrix();
 
         //Head animation start
         gl.glPushMatrix();
-        gl.glRotated(animCounter/5,0,1,0);
+        gl.glRotated(rotationLimit*4/5,0,1,0);
 
         //Head (white)
         gl.glColor3f(2.0f, 2.0f, 2.0f);
@@ -154,16 +154,16 @@ public class Avatar {
 
         //Animation stuff
         //Rotation animation limit
-        if (animCounter % 40 == 0) {
+        if (rotationLimit % 10 == 0 && rotationLimit != 0) {
             up = !up;
         }
 
-        if(distance > 0 && up || distance < 0 && !up) {
-            animCounter += 4;
-        }else {
-            animCounter -= 4;
+        if(rotationLimit == 10) {
+            rotationLimit--;
+        } else if(distance > 0 && up || distance < 0 && !up || rotationLimit == -10) {
+            rotationLimit++;
+        } else {
+            rotationLimit--;
         }
-
-        System.out.println(animCounter);
     }
 }
