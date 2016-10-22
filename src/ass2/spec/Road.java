@@ -18,7 +18,8 @@ public class Road {
 
     private MyTexture roadTexture;
 
-    private double[] fixPoint;
+    private double[] fixPoint1;
+    private double[] fixPoint2;
     
     /** 
      * Create a new road starting at the specified point
@@ -254,7 +255,8 @@ public class Road {
             gl.glEnd();
 
             //Take end point for last control point
-            fixPoint = p3;
+            fixPoint1 = p3;
+            fixPoint2 = p4;
         }
 
         //Draw the last missing segment at last control point
@@ -266,11 +268,11 @@ public class Road {
 
         double[] normal = MathUtil.normalisePoint(point(t)[0], point(t)[1], controlPoint(size()*3)[0], controlPoint(size()*3)[1]);
 
-        double vx = controlPoint(size()*3)[0] - point(t)[0];
+        double vx = controlPoint(size()*3)[0] - point(t)[0]+0.05;
         double vz = controlPoint(size()*3)[1] - point(t)[1];
 
-        double[] p1 = {point(t)[0] + (width()/2)* normal[0], y, point(t)[1] + (width()/2)* normal[1]};
-        double[] p2 = fixPoint;
+        double[] p1 = fixPoint2;
+        double[] p2 = fixPoint1;
         double[] p3 = {p2[0]+vx-0.1, y, p2[2]+vz};
         double[] p4 = {p1[0]+vx, y, p1[2]+vz};
 
