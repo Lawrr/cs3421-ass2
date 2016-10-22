@@ -12,6 +12,7 @@ public class Avatar {
 
     private double moveSpeed = 0.2;
     private double rotateSpeed = 5;
+    private int animCounter = 0;
 
     private Terrain terrain;
 
@@ -58,15 +59,24 @@ public class Avatar {
         gl.glTranslated(0.2,-0.05,0);
         glut.glutSolidSphere(0.25,5,5);
 
+        gl.glRotated(animCounter,0,0,1);
+
         //LegR (black)
         gl.glTranslated(0,-0.4,0.15);
         gl.glRotated(90,1,0,0);
         gl.glScaled(0.8,1.4,1/0.8);
         glut.glutSolidCylinder(0.1,0.3,8,8);
 
+        gl.glRotated(-animCounter,0,0,1);
+        gl.glRotated(animCounter,1,0,0);
+
         //LegL
         gl.glTranslated(0,-0.2,0.05);
         glut.glutSolidCylinder(0.1,0.3,8,8);
+
+
+        gl.glRotated(animCounter,0,1,0);
+        gl.glRotated(animCounter,0,1,0);
 
         //Head (white)
         gl.glColor3f(2.0f, 2.0f, 2.0f);
@@ -92,6 +102,7 @@ public class Avatar {
         gl.glDisable(GL_COLOR_MATERIAL);
 
         gl.glPopMatrix();
+
     }
 
     public double[] getPos() {
@@ -125,5 +136,11 @@ public class Avatar {
         double moveX = Math.cos(a0) * distance;
         double moveZ = Math.sin(a0) * distance;
         translate(moveX, 0, moveZ);
+
+        if(distance >= 0) {
+            animCounter++;
+        } else {
+            animCounter--;
+        }
     }
 }
