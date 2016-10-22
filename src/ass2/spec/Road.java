@@ -268,12 +268,12 @@ public class Road {
 
         double[] normal = MathUtil.normalisePoint(point(t)[0], point(t)[1], controlPoint(size()*3)[0], controlPoint(size()*3)[1]);
 
-        double vx = controlPoint(size()*3)[0] - point(t)[0]+0.05;
+        double vx = controlPoint(size()*3)[0] - point(t)[0]+0.1;
         double vz = controlPoint(size()*3)[1] - point(t)[1];
 
         double[] p1 = fixPoint2;
         double[] p2 = fixPoint1;
-        double[] p3 = {p2[0]+vx-0.1, y, p2[2]+vz};
+        double[] p3 = {p2[0]+vx-0.2, y, p2[2]+vz};
         double[] p4 = {p1[0]+vx, y, p1[2]+vz};
 
         gl.glNormal3d(0,1,0);
