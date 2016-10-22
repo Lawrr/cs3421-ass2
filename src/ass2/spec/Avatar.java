@@ -13,7 +13,7 @@ public class Avatar {
     private double moveSpeed = 0.2;
     private double rotateSpeed = 5;
     private int animCounter = 0;
-    boolean up = true;
+    boolean up= true;
 
     private Terrain terrain;
 
@@ -147,10 +147,12 @@ public class Avatar {
             up = true;
         }
 
-        if((distance > 0 && up) || distance < 0 && up) {
-            animCounter += 2;
+        if(distance > 0 && up || distance < 0 && !up) {
+            animCounter += 4;
         }else {
-            animCounter -= 2;
+            animCounter -= 4;
         }
+
+        System.out.println(animCounter);
     }
 }

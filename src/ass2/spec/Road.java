@@ -183,6 +183,7 @@ public class Road {
 
             double[] p1 = {point(t)[0] + (width()/2)* normal[0], y, point(t)[1] + (width()/2)* normal[1]};
             double[] p2 = {point(t)[0] - (width()/2)* normal[0], y, point(t)[1] - (width()/2)* normal[1]};
+
             double[] p3 = {point(t2)[0] - (width()/2)* normal2[0], y, point(t2)[1] - (width()/2)* normal2[1]};
             double[] p4 = {point(t2)[0] + (width()/2)* normal2[0], y, point(t2)[1] + (width()/2)* normal2[1]};
 
@@ -224,6 +225,49 @@ public class Road {
             gl.glEnd();
         }
 
+        //Draw the last missing segment
+        gl.glBegin(GL2.GL_TRIANGLES);
+
+        int p = myPoints.size()*size()-2;
+
+        double t = p * tIncrement;
+        double t2 = (p+1) *tIncrement;
+
+        double[] normal = normalisePoint(t, t2);
+
+        double vx = point(t2)[0] - point(t)[0];
+        double vz = point(t2)[1] - point(t)[1];
+
+        double[] p1 = {point(t)[0] + (width()/2)* normal[0], y, point(t)[1] + (width()/2)* normal[1]};
+        double[] p2 = {point(t)[0] - (width()/2)* normal[0], y, point(t)[1] - (width()/2)* normal[1]};
+        double[] p3 = {p2[0]+vx, y, p2[2]+vz};
+        double[] p4 = {p1[0]+vx, y, p1[2]+vz};
+
+        gl.glNormal3d(0,1,0);
+
+        gl.glTexCoord2d(0, 0);
+        gl.glVertex3dv(p1, 0);
+
+        gl.glTexCoord2d(1, 1);
+        gl.glVertex3dv(p3, 0);
+
+        gl.glTexCoord2d(1, 0);
+        gl.glVertex3dv(p2, 0);
+
+        gl.glTexCoord2d(0, 0);
+        gl.glVertex3dv(p1, 0);
+
+        gl.glTexCoord2d(0, 1);
+        gl.glVertex3dv(p4, 0);
+
+        gl.glTexCoord2d(1, 1);
+        gl.glVertex3dv(p3, 0);
+
+        gl.glTexCoord2d(0, 1);
+        gl.glVertex3dv(p4, 0);
+
+        gl.glEnd();
+
         gl.glBindTexture(GL2.GL_TEXTURE_2D, 0);
 
         //Set back to FILL when you are finished - not needed but is a bug fix for some implementations on some platforms
@@ -233,6 +277,7 @@ public class Road {
     double[] normalisePoint (double t, double nexT) {
         //For point normal dx=x2-x1 and dy=y2-y1 (VECTOR STUFF)
         //and then swap x and y and negate one(-dy, dx)
+        //Used to find distance of a point in between 2 points
 
         double vx = point(nexT)[0] - point(t)[0];
         double vz = point(nexT)[1] - point(t)[1];
@@ -248,9 +293,7 @@ public class Road {
         double normalVectorX = nVx/Math.sqrt(Math.pow(nVx,2) + Math.pow(nVz,2));
         double normalVectorZ = nVz/Math.sqrt(Math.pow(nVx,2) + Math.pow(nVz,2));
 
-        double normalPoint[] = {normalVectorX, normalVectorZ};
-
-        return normalPoint;
+        return new double[]{normalVectorX, normalVectorZ};
     }
 
     public void setRoadTexture(MyTexture texture) {
