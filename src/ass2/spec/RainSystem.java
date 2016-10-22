@@ -24,7 +24,7 @@ public class RainSystem {
     public void draw(GL2 gl) {
         // Enable Blending
         gl.glEnable(GL2.GL_BLEND);
-        //Creates an additive blend, which looks spectacular on a black background
+        // Creates an additive blend, which looks spectacular on a black background
         gl.glBlendFunc(GL2.GL_SRC_ALPHA, GL2.GL_ONE);
 
         for (Droplet d : droplets) {
@@ -71,8 +71,8 @@ public class RainSystem {
             gl.glScaled(0.1, 0.1, 0.1);
 
             float matAmbAndDif[] = {1.0f, 1.0f, 1.0f, 1.0f};
-            float matSpec[] = {1.0f, 1.0f, 1.0f, 1.0f};
-            float matShine[] = {50.0f};
+            float matSpec[] = {0.0f, 0.0f, 0.0f, 1.0f};
+            float matShine[] = {0.0f};
             float emm[] = {0.0f, 0.0f, 0.0f, 1.0f};
             gl.glMaterialfv(GL2.GL_FRONT, GL2.GL_AMBIENT_AND_DIFFUSE, matAmbAndDif, 0);
             gl.glMaterialfv(GL2.GL_FRONT, GL2.GL_SPECULAR, matSpec, 0);

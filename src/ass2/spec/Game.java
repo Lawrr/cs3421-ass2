@@ -30,7 +30,7 @@ public class Game extends JFrame implements GLEventListener, KeyListener {
     private RainSystem rainSystem;
 
     // Setting for sun
-    private static final float aSun = 0.0f; // Ambient white light intensity.
+    private static final float aSun = 0.1f; // Ambient white light intensity.
     private static final float dSun = 0.5f; // Diffuse white light intensity
     private static final float sSun = 0.2f; // Specular white light intensity.
     private static final float gSun = 0.2f; // Global Ambient intensity.
@@ -44,7 +44,6 @@ public class Game extends JFrame implements GLEventListener, KeyListener {
     private static final float torchExponent = 4;
 
     //Global Settings
-    private int localViewer = 1; // Local viewpoint?
     private boolean thirdPerson = true;
     private boolean raining = false;
     private boolean darkMode = false;
@@ -111,19 +110,19 @@ public class Game extends JFrame implements GLEventListener, KeyListener {
         pos[1] = myTerrain.altitude(pos[0], pos[2]);
 
         double a0 = Math.toRadians(avatar.getRotation());
+        double towardsX = Math.cos(a0);
+        double towardsZ = Math.sin(a0);
         double eyeX = pos[0];
         double eyeY = pos[1] + 1;
         double eyeZ = pos[2];
-        double towardsX = Math.cos(a0);
-        double towardsZ = Math.sin(a0);
         double centerX = eyeX + towardsX;
         double centerY = eyeY;
         double centerZ = eyeZ + towardsZ;
 
         if (thirdPerson) {
-            glu.gluLookAt(eyeX - towardsX * 2, eyeY + 1, eyeZ - towardsZ * 2, centerX, centerY, centerZ, 0.0, 1.0, 0.0);
+            glu.gluLookAt(eyeX - towardsX * 3, eyeY + 1, eyeZ - towardsZ * 3, centerX, centerY, centerZ, 0.0, 1.0, 0.0);
         } else {
-            glu.gluLookAt(eyeX - towardsX * 0.25, eyeY + 0.25, eyeZ - towardsZ * 0.25, centerX, centerY, centerZ, 0.0, 1.0, 0.0);
+            glu.gluLookAt(eyeX - towardsX, eyeY + 0.1, eyeZ - towardsZ, centerX, centerY, centerZ, 0.0, 1.0, 0.0);
         }
 
         // Directional light
@@ -299,17 +298,12 @@ public class Game extends JFrame implements GLEventListener, KeyListener {
 
         // Global light properties
         gl.glLightModelfv(GL2.GL_LIGHT_MODEL_AMBIENT, globAmb, 0); // Global ambient light.
-        gl.glLightModeli(GL2.GL_LIGHT_MODEL_LOCAL_VIEWER, localViewer); // Enable local viewpoint
+        gl.glLightModeli(GL2.GL_LIGHT_MODEL_LOCAL_VIEWER, 1); // Enable local viewpoint
     }
 
     @Override
     public void keyPressed(KeyEvent ev) {
         switch (ev.getKeyCode()) {
-            case KeyEvent.VK_L:
-                if (localViewer == 1) localViewer = 0;
-                else localViewer = 1;
-                System.out.println("Local viewer " + localViewer);
-                break;
             case KeyEvent.VK_T:
                 myTerrain.setIsDirectionalLight(darkMode);
                 darkMode = !darkMode;
@@ -329,7 +323,7 @@ public class Game extends JFrame implements GLEventListener, KeyListener {
             case KeyEvent.VK_RIGHT:
                 avatar.rotate(avatar.getRotateSpeed());
                 break;
-            case KeyEvent.VK_SPACE:
+            case KeyEvent.VK_V:
                 thirdPerson = !thirdPerson;
                 break;
             default:
