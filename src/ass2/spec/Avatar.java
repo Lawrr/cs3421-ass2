@@ -158,9 +158,9 @@ public class Avatar {
             up = !up;
         }
 
-        if(rotationLimit == 10) {
+        if (rotationLimit == 10) {
             rotationLimit--;
-        } else if(distance > 0 && up || distance < 0 && !up || rotationLimit == -10) {
+        } else if (distance > 0 && up || distance < 0 && !up || rotationLimit == -10) {
             rotationLimit++;
         } else {
             rotationLimit--;

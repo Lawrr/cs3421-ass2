@@ -17,6 +17,8 @@ public class Road {
     private double myWidth;
 
     private MyTexture roadTexture;
+
+    private double[] fixPoint;
     
     /** 
      * Create a new road starting at the specified point
@@ -172,21 +174,48 @@ public class Road {
         gl.glBindTexture(GL2.GL_TEXTURE_2D, roadTexture.getTextureId());
 
         //Draw the road mesh
-        for (int i = 0; i < myPoints.size()*size()-2; i++) {
+        for (int i = 0; i <= myPoints.size()*size()-2; i++) {
             //Point increment depending on size()
             double t = i * tIncrement;
-            double t2 = (i+1) *tIncrement;
-            double t3 = (i+2) *tIncrement;
+            double t2 = (i+1) * tIncrement;
 
-            double[] normal = normalisePoint(t, t2);
-            double[] normal2 = normalisePoint(t2, t3);
+            double vx = point(t2)[0] - point(t)[0];
+            double vz = point(t2)[1] - point(t)[1];
+
+            double[] normal = normalisePoint(point(t)[0], point(t)[1], point(t2)[0], point(t2)[1]);
 
             double[] p1 = {point(t)[0] + (width()/2)* normal[0], y, point(t)[1] + (width()/2)* normal[1]};
             double[] p2 = {point(t)[0] - (width()/2)* normal[0], y, point(t)[1] - (width()/2)* normal[1]};
 
-            double[] p3 = {point(t2)[0] - (width()/2)* normal2[0], y, point(t2)[1] - (width()/2)* normal2[1]};
-            double[] p4 = {point(t2)[0] + (width()/2)* normal2[0], y, point(t2)[1] + (width()/2)* normal2[1]};
+            double[] p3 = new double[3];
+            double[] p4 = new double[3];
 
+            //Prevent out of bound while drawing the last segment
+            //because normal calculations are done by 3 points
+            //so it doesn't produce cracks
+
+            if (i != myPoints.size()*size()-2) {
+                double t3 = (i + 2) * tIncrement;
+
+                double[] normal2 = normalisePoint(point(t2)[0], point(t2)[1], point(t3)[0], point(t3)[1]);
+
+                p3[0] = point(t2)[0] - (width()/2)* normal2[0];
+                p3[1] = y;
+                p3[2] = point(t2)[1] - (width()/2)* normal2[1];
+
+                p4[0] = point(t2)[0] + (width()/2)* normal2[0];
+                p4[1] = y;
+                p4[2] = point(t2)[1] + (width()/2)* normal2[1];
+
+            } else {
+                p3[0] = p2[0]+vx;
+                p3[1] = y;
+                p3[2] = p2[2]+vz;
+
+                p4[0] = p1[0]+vx;
+                p4[1] = y;
+                p4[2] = p1[2]+vz;
+            }
 
             gl.glBegin(GL2.GL_TRIANGLES);
 
@@ -223,24 +252,26 @@ public class Road {
             gl.glVertex3dv(p4, 0);
 
             gl.glEnd();
+
+            //Take end point for last control point
+            fixPoint = p3;
         }
 
-        //Draw the last missing segment
+        //Draw the last missing segment at last control point
         gl.glBegin(GL2.GL_TRIANGLES);
 
-        int p = myPoints.size()*size()-2;
+        int p = myPoints.size()*size()-1;
 
         double t = p * tIncrement;
-        double t2 = (p+1) *tIncrement;
 
-        double[] normal = normalisePoint(t, t2);
+        double[] normal = normalisePoint(point(t)[0], point(t)[1], controlPoint(size()*3)[0], controlPoint(size()*3)[1]);
 
-        double vx = point(t2)[0] - point(t)[0];
-        double vz = point(t2)[1] - point(t)[1];
+        double vx = controlPoint(size()*3)[0] - point(t)[0];
+        double vz = controlPoint(size()*3)[1] - point(t)[1];
 
         double[] p1 = {point(t)[0] + (width()/2)* normal[0], y, point(t)[1] + (width()/2)* normal[1]};
-        double[] p2 = {point(t)[0] - (width()/2)* normal[0], y, point(t)[1] - (width()/2)* normal[1]};
-        double[] p3 = {p2[0]+vx, y, p2[2]+vz};
+        double[] p2 = fixPoint;
+        double[] p3 = {p2[0]+vx-0.1, y, p2[2]+vz};
         double[] p4 = {p1[0]+vx, y, p1[2]+vz};
 
         gl.glNormal3d(0,1,0);
@@ -268,26 +299,27 @@ public class Road {
 
         gl.glEnd();
 
+
         gl.glBindTexture(GL2.GL_TEXTURE_2D, 0);
 
         //Set back to FILL when you are finished - not needed but is a bug fix for some implementations on some platforms
         gl.glPolygonMode(GL2.GL_FRONT_AND_BACK, GL2.GL_FILL);
     }
 
-    double[] normalisePoint (double t, double nexT) {
+    double[] normalisePoint (double x1, double z1, double x2, double z2) {
         //For point normal dx=x2-x1 and dy=y2-y1 (VECTOR STUFF)
         //and then swap x and y and negate one(-dy, dx)
         //Used to find distance of a point in between 2 points
 
-        double vx = point(nexT)[0] - point(t)[0];
-        double vz = point(nexT)[1] - point(t)[1];
+        double vx = x2 - x1;
+        double vz = z2 - z1;
 
-        double nx1 = point(t)[0] - vz;
-        double nz1 = point(t)[1] + vx;
+        double nx1 = x1 - vz;
+        double nz1 = z1 + vx;
 
         //Vector from point to point normal
-        double nVx = nx1 - point(t)[0];
-        double nVz = nz1 - point(t)[1];
+        double nVx = nx1 - x1;
+        double nVz = nz1 - z1;
 
         //Normalise the vector
         double normalVectorX = nVx/Math.sqrt(Math.pow(nVx,2) + Math.pow(nVz,2));
