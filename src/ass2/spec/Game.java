@@ -47,6 +47,7 @@ public class Game extends JFrame implements GLEventListener, KeyListener {
     private boolean thirdPerson = true;
     private boolean raining = false;
     private boolean darkMode = false;
+    private boolean gravityEnabled = false; // Allows for jumping
 
     public Game(Terrain terrain) {
         super("Assignment 2");
@@ -109,6 +110,17 @@ public class Game extends JFrame implements GLEventListener, KeyListener {
         GLU glu = new GLU();
 
         double[] pos = avatar.getPos();
+
+        // Update avatar altitude
+        if (gravityEnabled && pos[1] >= myTerrain.altitude(pos[0], pos[2])) {
+            // Gravity allows for jumping and makes the avatar fall gradually
+            avatar.translate(0, avatar.getVelocity(), 0);
+            avatar.setVelocity(avatar.getVelocity() - 0.001);
+        } else {
+            // Default behaviour where the avatar y just updates to the terrain altitude
+            pos[1] = myTerrain.altitude(pos[0], pos[2]);
+            avatar.setVelocity(0);
+        }
 
         double a0 = Math.toRadians(avatar.getRotation());
         double towardsX = Math.cos(a0);
@@ -326,6 +338,14 @@ public class Game extends JFrame implements GLEventListener, KeyListener {
             case KeyEvent.VK_V:
                 thirdPerson = !thirdPerson;
                 break;
+            case KeyEvent.VK_G:
+                gravityEnabled = !gravityEnabled;
+                break;
+            case KeyEvent.VK_SPACE:
+                double pos[] = avatar.getPos();
+                if (gravityEnabled && pos[1] == myTerrain.altitude(pos[0], pos[2])) {
+                    avatar.setVelocity(0.06);
+                }
             default:
                 break;
         }

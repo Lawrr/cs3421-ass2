@@ -13,7 +13,8 @@ public class Avatar {
     private double moveSpeed = 0.2;
     private double rotateSpeed = 5;
     private int animCounter = 0;
-    boolean up= true;
+    private double velocity = 0;
+    private boolean up = true;
 
     private Terrain terrain;
 
@@ -137,21 +138,24 @@ public class Avatar {
         return moveSpeed;
     }
 
+    public double getVelocity() {
+        return velocity;
+    }
+
+    public void setVelocity(double velocity) {
+        this.velocity = velocity;
+    }
+
     public void moveForward(double distance) {
         double a0 = Math.toRadians(rotation);
         double moveX = Math.cos(a0) * distance;
         double moveZ = Math.sin(a0) * distance;
         translate(moveX, 0, moveZ);
 
-        // Update avatar altitude
-        translation[1] = terrain.altitude(translation[0], translation[2]);
-
         //Animation stuff
         //Rotation animation limit
-        if(animCounter == 40) {
-            up = false;
-        } else if(animCounter == -40) {
-            up = true;
+        if (animCounter % 40 == 0) {
+            up = !up;
         }
 
         if(distance > 0 && up || distance < 0 && !up) {
